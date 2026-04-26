@@ -1,0 +1,119 @@
+---
+- name: Workstation Setup - Flatpaks
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: DEBUG - Environment Info
+      debug:
+        msg: "User: {{ ansible_user_id }}"
+
+    - name: Add Flathub remote for user
+      become: false
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        method: user
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    - name: Flatpak hw-probe
+      become: false
+      flatpak: name=org.linux_hardware.hw-probe state=present method=user remote=flathub
+
+    - name: Flatpak MissionCenter
+      become: false
+      flatpak: name=io.missioncenter.MissionCenter state=present method=user remote=flathub
+
+    - name: Flatpak Mousam
+      become: false
+      flatpak: name=io.github.amit9838.mousam state=present method=user remote=flathub
+
+    - name: Flatpak Converter
+      become: false
+      flatpak: name=io.gitlab.adhami3310.Converter state=present method=user remote=flathub
+
+    - name: Flatpak NewsFlash
+      become: false
+      flatpak: name=io.gitlab.news_flash.NewsFlash state=present method=user remote=flathub
+
+    - name: Flatpak Blanket
+      become: false
+      flatpak: name=com.rafaelmardojai.Blanket state=present method=user remote=flathub
+
+    - name: Flatpak Inspector
+      become: false
+      flatpak: name=io.github.nokse22.inspector state=present method=user remote=flathub
+
+    - name: Flatpak TubeConverter
+      become: false
+      flatpak: name=org.nickvision.tubeconverter state=present method=user remote=flathub
+
+    - name: Flatpak Shortwave
+      become: false
+      flatpak: name=de.haeckerfelix.Shortwave state=present method=user remote=flathub
+
+    - name: Flatpak Frog
+      become: false
+      flatpak: name=com.github.tenderowl.frog state=present method=user remote=flathub
+
+    - name: Flatpak Buzz
+      become: false
+      flatpak: name=io.github.chidiwilliams.Buzz state=present method=user remote=flathub
+
+    - name: Flatpak List
+      become: false
+      flatpak: name=io.github.mrvladus.List state=present method=user remote=flathub
+
+    - name: Flatpak Planify
+      become: false
+      flatpak: name=io.github.alainm23.planify state=present method=user remote=flathub
+
+    - name: Flatpak Resources
+      become: false
+      flatpak: name=net.nokyan.Resources state=present method=user remote=flathub
+
+    - name: Flatpak DevToolbox
+      become: false
+      flatpak: name=me.iepure.devtoolbox state=present method=user remote=flathub
+
+    - name: Flatpak TubeFeeder
+      become: false
+      flatpak: name=de.schmidhuberj.tubefeeder state=present method=user remote=flathub
+
+    - name: Flatpak KleverNotes
+      become: false
+      flatpak: name=org.kde.klevernotes state=present method=user remote=flathub
+
+    - name: Flatpak VLC
+      become: false
+      flatpak: name=org.videolan.VLC state=present method=user remote=flathub
+
+    - name: Flatpak Amberol
+      become: false
+      flatpak: name=io.bassi.Amberol state=present method=user remote=flathub
+
+    - name: Flatpak Audacity
+      become: false
+      flatpak: name=org.audacityteam.Audacity state=present method=user remote=flathub
+
+    - name: Flatpak GIMP
+      become: false
+      flatpak: name=org.gimp.GIMP state=present method=user remote=flathub
+
+    - name: Flatpak Krita
+      become: false
+      flatpak: name=org.kde.krita state=present method=user remote=flathub
+
+    - name: Flatpak KeePassXC
+      become: false
+      flatpak: name=org.keepassxc.KeePassXC state=present method=user remote=flathub
+
+    - name: Flatpak Aisleriot
+      become: false
+      flatpak: name=org.gnome.Aisleriot state=present method=user remote=flathub
+
+    - name: Flatpak LocalSend
+      become: false
+      flatpak: name=org.localsend.localsend_app state=present method=user remote=flathub
+

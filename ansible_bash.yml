@@ -1,0 +1,63 @@
+---
+- name: Workstation Setup - Bash Config
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: DEBUG - Show Environment
+      debug:
+        msg: "Sudo User: {{ ansible_env.SUDO_USER | default('NONE') }}"
+
+    - name: Ensure config directory exists
+      become: true
+      file:
+        path: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config"
+        state: directory
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
+
+    - name: Pull bash_aliases from git
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch1/main/bash_aliases"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0644'
+        force: true  # This ensures it downloads the latest even if file exists
+        validate_certs: false
+        timeout: 20
+
+    - name: Pull bash_functions from git
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch1/main/bash_functions"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0644'
+        force: true  # This ensures it downloads the latest even if file exists
+        validate_certs: false
+        timeout: 20
+
+    - name: Create bash_extras in config folder
+      become: true
+      copy:
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_extras"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0644'
+        content: |
+          # Source files from the config directory
+          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases
+          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions
+
+    - name: Ensure .bashrc sources from the config folder
+      become: true
+      lineinfile:
+        path: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/.bashrc"
+        line: "[[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_extras ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_extras"
+        state: present
+

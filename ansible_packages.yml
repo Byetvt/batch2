@@ -1,0 +1,252 @@
+---
+- name: Workstation Setup - APT Packages
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: DEBUG - Environment Info
+      debug:
+        msg: "User: {{ ansible_user_id }} | Home: {{ ansible_user_dir }}"
+
+    - name: Install aisleriot
+      become: true
+      package: name=aisleriot state=present update_cache=yes
+
+    - name: Install alacritty
+      become: true
+      package: name=alacritty state=present
+
+    - name: Install thunderbird
+      become: true
+      package: name=thunderbird state=present
+
+    - name: REMOVE angrydd
+      become: true
+      package: name=angrydd state=absent
+
+    - name: Install bat
+      become: true
+      package: name=bat state=present
+
+    - name: Install bmon
+      become: true
+      package: name=bmon state=present
+
+    - name: Install btop
+      become: true
+      package: name=btop state=present
+
+    - name: Install cherrytree
+      become: true
+      package: name=cherrytree state=present
+
+    - name: Install chromium
+      become: true
+      package: name=chromium state=present
+
+    - name: Install cifs-utils
+      become: true
+      package: name=cifs-utils state=present
+
+    - name: Install cmatrix
+      become: true
+      package: name=cmatrix state=present
+
+    - name: Install cpufetch
+      become: true
+      package: name=cpufetch state=present
+
+    - name: Install ffmpeg
+      become: true
+      package: name=ffmpeg state=present
+
+    - name: Install figlet
+      become: true
+      package: name=figlet state=present
+
+    - name: Install flatpak
+      become: true
+      package: name=flatpak state=present
+
+    - name: Install freerdp2-x11
+      become: true
+      package: name=freerdp2-x11 state=present
+
+    - name: Install freetuxtv
+      become: true
+      package: name=freetuxtv state=present
+
+    - name: Install fzf
+      become: true
+      package: name=fzf state=present
+
+    - name: Install git
+      become: true
+      package: name=git state=present
+
+    - name: Install glances
+      become: true
+      package: name=glances state=present
+
+    - name: Install gparted
+      become: true
+      package: name=gparted state=present
+
+    - name: Install hardinfo
+      become: true
+      package: name=hardinfo state=present
+
+    - name: Install hashalot
+      become: true
+      package: name=hashalot state=present
+
+    - name: Install inxi
+      become: true
+      package: name=inxi state=present
+
+    - name: Install kate
+      become: true
+      package: name=kate state=present
+
+    - name: Install keepassxc
+      become: true
+      package: name=keepassxc state=present
+
+    - name: Install kitty
+      become: true
+      package: name=kitty state=present
+
+    - name: Install krita
+      become: true
+      package: name=krita state=present
+
+    - name: Install krusader
+      become: true
+      package: name=krusader state=present
+
+    - name: Install ksnip
+      become: true
+      package: name=ksnip state=present
+
+    - name: Install mc
+      become: true
+      package: name=mc state=present
+
+    - name: Install ncal
+      become: true
+      package: name=ncal state=present
+
+    - name: Install ncdu
+      become: true
+      package: name=ncdu state=present
+
+    - name: Install nemo-terminal
+      become: true
+      package: name=nemo-terminal state=present
+
+    - name: Install neofetch
+      become: true
+      package: name=neofetch state=present
+
+    - name: Install neovim
+      become: true
+      package: name=neovim state=present
+
+    - name: Install netdiscover
+      become: true
+      package: name=netdiscover state=present
+
+    - name: Install net-tools
+      become: true
+      package: name=net-tools state=present
+
+    - name: Install nmon
+      become: true
+      package: name=nmon state=present
+
+    - name: Install pcal
+      become: true
+      package: name=pcal state=present
+
+    - name: Install python3-pcbasic
+      become: true
+      package: name=python3-pcbasic state=present
+
+    - name: Install ghostscript (provides ps2pdf)
+      become: true
+      package: name=ghostscript state=present
+
+    - name: Install ripgrep
+      become: true
+      package: name=ripgrep state=present
+
+    - name: Install rxvt-unicode
+      become: true
+      package: name=rxvt-unicode state=present
+
+    - name: Install smbclient
+      become: true
+      package: name=smbclient state=present
+
+    - name: Install tealdeer
+      become: true
+      package: name=tealdeer state=present
+
+    - name: Install terminator
+      become: true
+      package: name=terminator state=present
+
+    - name: Install tilix
+      become: true
+      package: name=tilix state=present
+
+    # tldr update has issues 20260426
+    - name: Install tldr
+      become: true
+      package: name=tldr state=absent
+
+    - name: Install ufw
+      become: true
+      package: name=ufw state=present
+
+    - name: Install vlc
+      become: true
+      package: name=vlc state=present
+
+    - name: Install geany
+      become: true
+      package: name=geany state=present
+
+    - name: Install flameshot
+      become: true
+      package: name=flameshot state=present
+
+    - name: Install qalc
+      become: true
+      package: name=qalc state=present
+
+    - name: Install qalculate-gtk
+      become: true
+      package: name=qalculate-gtk state=present
+
+    - name: Install vulkan-tools
+      become: true
+      package: name=vulkan-tools state=present
+
+    - name: Install plocate
+      become: true
+      package: name=plocate state=present
+
+    - name: REMOVE MS Core Fonts
+      become: true
+      package: name=ttf-mscorefonts-installer state=absent
+
+    - name: Enable UFW firewall
+      become: true
+      ufw: state=enabled policy=deny
+
+    - name: Update plocate database
+      become: true
+      command: updatedb
+
