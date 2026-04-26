@@ -4,6 +4,9 @@
   connection: local
   gather_facts: true
 
+  ## use ===  ansible-playbook ansible_bash.yml --ask-become-pass
+  ## to run the bash script by itself
+
   tasks:
     - name: DEBUG - Show Environment
       debug:
