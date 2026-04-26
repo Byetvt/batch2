@@ -104,7 +104,7 @@ histme() {
 # Update your function to this for easier reading
 # Get quick cheat sheets from cheat.sh
 cht() {
-    curl -s "https://cht.sh/$1" | less -R
+    curl -s "https://cht.sh/$1" 
 }
 
 
