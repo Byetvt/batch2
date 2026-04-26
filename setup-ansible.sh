@@ -37,7 +37,17 @@ fi
 cd "$TARGET_DIR" || exit
 echo "Current directory: $(pwd)"
 
-# 4. Display helpful usage commands
+# 4. Download YAML files into the target directory
+echo "Downloading Ansible playbooks to $TARGET_DIR..."
+
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/main.yml" -O "$TARGET_DIR/main.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash.yml" -O "$TARGET_DIR/ansible_bash.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_flatpaks.yml" -O "$TARGET_DIR/ansible_flatpaks.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_packages.yml" -O "$TARGET_DIR/ansible_packages.yml"
+
+echo "Download complete."
+
+# 5. Display helpful usage commands
 echo "----------------------------------------------------------------"
 echo "Usage Tips:"
 echo "Full debug install == ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv"
