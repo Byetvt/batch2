@@ -61,3 +61,22 @@
         line: "[[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_extras ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_extras"
         state: present
 
+    - name: Download zip999.py to ansible-config
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/zip999.py"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/zip999.py"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
+
+    - name: Copy zip999.py to Nemo scripts if Linux Mint
+      become: true
+      copy:
+        src: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/zip999.py"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/.local/share/nemo/scripts/zip999.py"
+        remote_src: true
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
+      when: ansible_distribution == 'Linux Mint'          
