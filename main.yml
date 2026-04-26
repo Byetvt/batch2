@@ -1,0 +1,6 @@
+---
+- import_playbook: ansible_packages.yml
+- import_playbook: ansible_flatpaks.yml
+- import_playbook: ansible_bash.yml
+  # use this to run the .yml
+  # ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv
