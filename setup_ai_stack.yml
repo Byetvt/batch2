@@ -1,0 +1,98 @@
+---
+- name: Local Laptop AI Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars:
+    ollama_models:
+      - llama2
+      - llava
+      - codegemma
+    open_webui_port: 8080
+
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: [curl, ca-certificates, gnupg, ufw]
+        state: present
+        update_cache: yes
+
+    - name: Allow Ollama and WebUI through UFW
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "11434"
+        - "{{ open_webui_port }}"
+
+    - name: Install Ollama
+      shell: "curl -fsSL https://ollama.com/install.sh | sh"
+      args:
+        creates: /usr/local/bin/ollama
+
+    - name: Configure Ollama to listen on all interfaces
+      file:
+        path: /etc/systemd/system/ollama.service.d
+        state: directory
+
+    - name: Create Ollama environment override
+      copy:
+        dest: /etc/systemd/system/ollama.service.d/override.conf
+        content: |
+          [Service]
+          Environment="OLLAMA_HOST=0.0.0.0"
+          Environment="OLLAMA_ORIGINS=*"
+
+    - name: Reload systemd and restart Ollama
+      systemd:
+        name: ollama
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+
+    - name: Wait for Ollama API
+      uri:
+        url: http://127.0.0.1:11434
+        return_content: yes
+      register: ollama_status
+      until: "'Ollama is running' in ollama_status.content"
+      retries: 5
+      delay: 5
+
+    - name: Pull AI models
+      command: "ollama pull {{ item }}"
+      loop: "{{ ollama_models }}"
+      register: model_pull
+      changed_when: "'success' in model_pull.stdout"
+
+    - name: Install Docker
+      shell: "curl -fsSL https://get.docker.com | sh"
+      args:
+        creates: /usr/bin/docker
+
+    - name: Ensure Docker service is started
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Check if Open WebUI container is already running
+      shell: "docker ps -a --format '{% raw %}{{.Names}}{% endraw %}'"
+      register: docker_containers
+      changed_when: false
+
+    - name: Stop and remove Open WebUI container
+      shell: "docker rm -f open-webui"
+      when: "'open-webui' in docker_containers.stdout"
+
+    - name: Launch Open WebUI
+      shell: |
+        docker run -d -p {{ open_webui_port }}:8080 \
+        --add-host=host.docker.internal:host-gateway \
+        -v open-webui:/app/backend/data \
+        -e OLLAMA_BASE_URL=http://host.docker.internal:11434 \
+        --name open-webui \
+        --restart always \
+        ghcr.io/open-webui/open-webui:main
+
