@@ -3,11 +3,15 @@
   hosts: localhost
   connection: local
   become: true
+# ansible-galaxy collection install community.general
+# ansible-playbook setup_ai_stack.yml --ask-become-pass
   vars:
     ollama_models:
       - llama2
       - llava
       - codegemma
+      - qwen2.5-coder:3b
+      - deepseek-r1:7b
     open_webui_port: 8080
 
   tasks:
