@@ -1,0 +1,65 @@
+---
+# ansible-playbook remove_ai_stack.yml --ask-become-pass
+- name: Remove Local Laptop AI Setup
+  hosts: localhost
+  connection: local
+  become: true
+  vars:
+    ollama_models:
+      - llama2
+      - llava
+      - codegemma
+    open_webui_port: 8080
+
+  tasks:
+    - name: Stop and remove Open WebUI container
+      shell: "docker rm -f open-webui"
+      ignore_errors: yes
+
+    - name: Remove Open WebUI Docker Volume
+      shell: "docker volume rm open-webui"
+      ignore_errors: yes
+      # Note: This deletes all your chat history/settings in the WebUI
+
+    - name: Stop Ollama service
+      systemd:
+        name: ollama
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Remove Ollama binaries and service files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/local/bin/ollama
+        - /etc/systemd/system/ollama.service
+        - /etc/systemd/system/ollama.service.d
+        - /usr/lib/systemd/system/ollama.service
+
+    - name: Remove Ollama data and models
+      file:
+        path: /usr/share/ollama
+        state: absent
+      # Note: This deletes the actual LLM model files (Llama2, etc.)
+
+    - name: Reload systemd units
+      systemd:
+        daemon_reload: yes
+
+    - name: Remove UFW rules for AI stack
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+        delete: yes
+      loop:
+        - "11434"
+        - "{{ open_webui_port }}"
+
+    - name: Summary of actions
+      debug:
+        msg: "AI Stack has been removed. Docker and Apt packages (curl, ufw) were left installed as they may be used by other applications."
+
+
