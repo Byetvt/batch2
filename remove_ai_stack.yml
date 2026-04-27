@@ -9,6 +9,8 @@
       - llama2
       - llava
       - codegemma
+      - qwen2.5-coder:3b
+      - deepseek-r1:7b
     open_webui_port: 8080
 
   tasks:
