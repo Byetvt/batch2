@@ -44,6 +44,9 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/main.yml" -O "$TAR
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash.yml" -O "$TARGET_DIR/ansible_bash.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_flatpaks.yml" -O "$TARGET_DIR/ansible_flatpaks.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_packages.yml" -O "$TARGET_DIR/ansible_packages.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup_ai_stack.yml" -O "$TARGET_DIR/setup_ai_stack.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/remove_ai_stack.yml" -O "$TARGET_DIR/remove_ai_stack.yml"
+
 
 echo "Download complete."
 
