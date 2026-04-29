@@ -82,4 +82,25 @@
         owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         mode: '0755'
+      when: ansible_distribution == 'Linux Mint'         
+
+       - name: Download folder_to_iso.sh to ansible-config
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/folder_to_iso.sh"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/folder_to_iso.sh"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
+
+    - name: Copy folder_to_iso.sh to Nemo scripts if Linux Mint
+      become: true
+      copy:
+        src: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/folder_to_iso.sh"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/.local/share/nemo/scripts/folder_to_iso.sh"
+        remote_src: true
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
       when: ansible_distribution == 'Linux Mint'          
+
