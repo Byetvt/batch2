@@ -1,11 +1,10 @@
----
+  ## use ===  ansible-playbook ansible_bash.yml --ask-become-pass
+  ## to run the bash script by itself
+
 - name: Workstation Setup - Bash Config
   hosts: localhost
   connection: local
   gather_facts: true
-
-  ## use ===  ansible-playbook ansible_bash.yml --ask-become-pass
-  ## to run the bash script by itself
 
   tasks:
     - name: DEBUG - Show Environment
@@ -24,24 +23,36 @@
     - name: Pull bash_aliases from git
       become: true
       get_url:
-        url: "https://raw.githubusercontent.com/Byetvt/batch1/main/bash_aliases"
-        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases"
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/bash_aliases.txt"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases.txt"
         owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         mode: '0644'
-        force: true  # This ensures it downloads the latest even if file exists
+        force: true
         validate_certs: false
         timeout: 20
 
     - name: Pull bash_functions from git
       become: true
       get_url:
-        url: "https://raw.githubusercontent.com/Byetvt/batch1/main/bash_functions"
-        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions"
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/bash_functions.txt"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions.txt"
         owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         mode: '0644'
-        force: true  # This ensures it downloads the latest even if file exists
+        force: true
+        validate_certs: false
+        timeout: 20
+
+    - name: Pull bash_notes from git
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/bash_notes.txt"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_notes.txt"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0644'
+        force: true
         validate_certs: false
         timeout: 20
 
@@ -54,8 +65,8 @@
         mode: '0644'
         content: |
           # Source files from the config directory
-          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases
-          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions
+          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases.txt ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_aliases.txt
+          [[ -f /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions.txt ]] && . /home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/bash_functions.txt
 
     - name: Ensure .bashrc sources from the config folder
       become: true
@@ -95,6 +106,9 @@
 
     - name: Copy folder_to_iso.sh to Nemo scripts if Linux Mint
       become: true
+
+
+
       copy:
         src: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/folder_to_iso.sh"
         dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/.local/share/nemo/scripts/folder_to_iso.sh"
@@ -103,15 +117,6 @@
         group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
         mode: '0755'
       when: ansible_distribution == 'Linux Mint'          
-
-
-#---
-#- name: Customize Linux Mint 22 Desktop and Nemo
-#  hosts: localhost
-#  connection: local
-#  tasks:
-# requires
-# ansible-galaxy collection install community.general
 
     - name: Set Nemo default view to List View
       community.general.dconf:
@@ -144,12 +149,3 @@
           Name=Terminal
           Comment=Open terminal on login
         mode: '0644'
-
-
-
-
-
-
-
-
-
