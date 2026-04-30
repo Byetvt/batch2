@@ -1,0 +1,106 @@
+# 
+# ansible-playbook -i "localhost," -c local system_report.yml --ask-become-pass
+# ansible-playbook -i "localhost," -c local system_report.yml --ask-become-pass
+#
+---
+- name: Collect Detailed Neofetch Style System Information
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars:
+    report_file: "{{ ansible_env.HOME }}/{{ ansible_hostname }}.txt"
+
+  tasks:
+    - name: Get Package Counts
+      shell: |
+        echo "$(dpkg -l | grep '^ii' | wc -l) (dpkg), $(flatpak list | wc -l) (flatpak)"
+      register: package_count
+      changed_when: false
+
+    - name: Get Screen Resolution
+      shell: "xrandr | grep '*' | awk '{print $1}' | tr '\n' ',' | sed 's/,$//'"
+      register: resolution
+      changed_when: false
+      failed_when: false
+
+    - name: Get Desktop Info
+      shell: |
+        echo "Theme: $(gsettings get org.cinnamon.desktop.interface gtk-theme | tr -d \"\'\")"
+        echo "Icons: $(gsettings get org.cinnamon.desktop.interface icon-theme | tr -d \"\'\")"
+      register: desktop_info
+      changed_when: false
+
+    - name: Get GPU Information
+      shell: "lspci | grep -E 'VGA|3D' | cut -d ':' -f3 | sed 's/^ //'"
+      register: gpu_data
+      changed_when: false
+
+    - name: Get Detailed RAM Info (DDR Type and ECC)
+      become: yes
+      shell: |
+        # Specifically look for DDR and exclude the word "Correction"
+        TYPE=$(dmidecode -t memory | grep "Type:" | grep -E "DDR[0-9]" | head -n1 | awk '{print $2}')
+        
+        # Determine ECC based on bit width
+        TWIDTH=$(dmidecode -t memory | grep -m1 "Total Width:" | awk '{print $3}')
+        DWIDTH=$(dmidecode -t memory | grep -m1 "Data Width:" | awk '{print $3}')
+        
+        if [ -z "$TYPE" ]; then TYPE="RAM"; fi
+        if [ "$TWIDTH" != "$DWIDTH" ] && [ "$TWIDTH" != "Unknown" ] && [ ! -z "$TWIDTH" ]; then ECC="ECC"; else ECC="Non-ECC"; fi
+        
+        echo "$TYPE $ECC"
+      register: ram_details
+      changed_when: false
+      failed_when: false
+
+    - name: Get Block Devices (lsblk)
+      shell: "lsblk --output NAME,SERIAL,MODEL,TRAN,TYPE,SIZE,FSTYPE,MOUNTPOINT"
+      register: lsblk_data
+      changed_when: false
+
+    - name: Get Fdisk Table
+      become: yes
+      command: "fdisk -l"
+      register: fdisk_data
+      changed_when: false
+
+    - name: Generate Neofetch Style Report
+      copy:
+        dest: "{{ report_file }}"
+        content: |
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}
+          Host: {{ ansible_product_name }}
+          Kernel: {{ ansible_kernel }}
+          Uptime: {{ ansible_uptime_seconds | int // 60 }} mins
+          Packages: {{ package_count.stdout }}
+          Shell: {{ ansible_user_shell | basename }}
+          Resolution: {{ resolution.stdout | default('N/A') }}
+          DE: {{ ansible_env.XDG_CURRENT_DESKTOP | default('Cinnamon') }}
+          WM: Mutter (Muffin)
+          {{ desktop_info.stdout }}
+          Terminal: {{ ansible_env.TERM | default('gnome-terminal') }}
+          CPU: {{ ansible_processor[-1] }} ({{ ansible_processor_vcpus }})
+          GPU: {{ gpu_data.stdout }}
+          Memory: {{ (ansible_memtotal_mb - ansible_memfree_mb) }}MiB / {{ ansible_memtotal_mb }}MiB {{ ram_details.stdout | default('') }}
+
+          NETWORKING
+          ---------------------------------------
+          IPv4 Address: {{ ansible_default_ipv4.address | default('N/A') }}
+
+          EFI BOOT ENTRIES
+          ---------------------------------------
+          {{ lookup('pipe', 'efibootmgr | grep "^Boot[0-9]"') }}
+
+          DRIVE AND PARTITION LAYOUT (lsblk)
+          ---------------------------------------
+          {{ lsblk_data.stdout }}
+
+          DISK PARTITION DETAILS (fdisk)
+          ---------------------------------------
+          {{ fdisk_data.stdout }}
+
+
+          ---------------------------------------
+
+
+
