@@ -3,12 +3,12 @@
 # ansible-playbook -i "localhost," -c local system_report.yml --ask-become-pass
 #
 ---
-- name: Collect Detailed Neofetch Style System Information
+- name: Collect Detailed System Information with Custom Filename
   hosts: localhost
   connection: local
   gather_facts: yes
   vars:
-    report_file: "{{ ansible_env.HOME }}/{{ ansible_hostname }}.txt"
+    report_dir: "{{ ansible_env.HOME }}"
 
   tasks:
     - name: Get Package Counts
@@ -38,20 +38,14 @@
     - name: Get Detailed RAM Info (DDR Type and ECC)
       become: yes
       shell: |
-        # Specifically look for DDR and exclude the word "Correction"
         TYPE=$(dmidecode -t memory | grep "Type:" | grep -E "DDR[0-9]" | head -n1 | awk '{print $2}')
-        
-        # Determine ECC based on bit width
         TWIDTH=$(dmidecode -t memory | grep -m1 "Total Width:" | awk '{print $3}')
         DWIDTH=$(dmidecode -t memory | grep -m1 "Data Width:" | awk '{print $3}')
-        
         if [ -z "$TYPE" ]; then TYPE="RAM"; fi
         if [ "$TWIDTH" != "$DWIDTH" ] && [ "$TWIDTH" != "Unknown" ] && [ ! -z "$TWIDTH" ]; then ECC="ECC"; else ECC="Non-ECC"; fi
-        
         echo "$TYPE $ECC"
       register: ram_details
       changed_when: false
-      failed_when: false
 
     - name: Get Block Devices (lsblk)
       shell: "lsblk --output NAME,SERIAL,MODEL,TRAN,TYPE,SIZE,FSTYPE,MOUNTPOINT"
@@ -64,9 +58,19 @@
       register: fdisk_data
       changed_when: false
 
+    - name: Format CPU Name and IP for Filename
+      set_fact:
+        clean_cpu: "{{ (ansible_processor[-1] | regex_replace('[^a-zA-Z0-9]', '-') | regex_replace('-+', '-') | upper).split('-PROCESSOR')[0] | trim('-') }}"
+        ip_suffix: "{{ ansible_default_ipv4.address.split('.')[-1] }}"
+        timestamp: "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}{{ ansible_date_time.second }}"
+
+    - name: Define Full Report Path
+      set_fact:
+        full_report_path: "{{ report_dir }}/{{ clean_cpu }}-{{ ip_suffix }}-{{ timestamp }}.txt"
+
     - name: Generate Neofetch Style Report
       copy:
-        dest: "{{ report_file }}"
+        dest: "{{ full_report_path }}"
         content: |
           OS: {{ ansible_distribution }} {{ ansible_distribution_version }} {{ ansible_architecture }}
           Host: {{ ansible_product_name }}
@@ -99,8 +103,22 @@
           ---------------------------------------
           {{ fdisk_data.stdout }}
 
+          ------------------------------
 
-          ---------------------------------------
+
+
+    - name: Display Report Path in Terminal
+      debug:
+        msg: "Report saved to: {{ full_report_path }}"
+
+    - name: Send Desktop Notification
+      shell: "notify-send 'Ansible Report Complete' 'Saved to: {{ full_report_path }}'"
+      changed_when: false
+      failed_when: false
+
+    - name: Final Terminal Summary
+      debug:
+        msg: "Report saved to: {{ full_report_path }}"
 
 
 
