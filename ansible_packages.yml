@@ -57,6 +57,10 @@
       become: true
       package: name=cpufetch state=present
 
+    - name: Install kdiff3
+      become: true
+      package: name=kdiff3 state=present
+
     - name: Install kolourpaint
       become: true
       package: name=kolourpaint state=present
