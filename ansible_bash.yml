@@ -104,3 +104,52 @@
         mode: '0755'
       when: ansible_distribution == 'Linux Mint'          
 
+
+#---
+#- name: Customize Linux Mint 22 Desktop and Nemo
+#  hosts: localhost
+#  connection: local
+#  tasks:
+# requires
+# ansible-galaxy collection install community.general
+
+    - name: Set Nemo default view to List View
+      community.general.dconf:
+        key: "/org/nemo/preferences/default-folder-viewer"
+        value: "'list-view'"
+        state: present
+
+    - name: Set mouse to left-handed mode
+      community.general.dconf:
+        key: "/org/cinnamon/desktop/peripherals/mouse/left-handed"
+        value: "true"
+        state: present
+
+    - name: Create Autostart directory if it does not exist
+      ansible.builtin.file:
+        path: "~/.config/autostart"
+        state: directory
+        mode: '0755'
+
+    - name: Set Terminal to open at startup
+      ansible.builtin.copy:
+        dest: "~/.config/autostart/gnome-terminal.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Exec=gnome-terminal
+          Hidden=false
+          NoDisplay=false
+          X-GNOME-Autostart-enabled=true
+          Name=Terminal
+          Comment=Open terminal on login
+        mode: '0644'
+
+
+
+
+
+
+
+
+

@@ -50,6 +50,9 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/remove_ai_stack.ym
 
 echo "Download complete."
 
+ansible-galaxy collection install community.general
+
+
 # 5. Display helpful usage commands
 echo "----------------------------------------------------------------"
 echo "Usage Tips:"
