@@ -1,0 +1,110 @@
+
+###########################################
+allnums=(69 538 623)
+##
+for t in ${allnums[@]}; dobash_notes
+echo "Inside LINUX for loop"
+THE_NUM=$t
+echo $THE_NUM
+echo "Starting the script"
+echo next iteration
+done
+# *********
+
+###########################################
+if [ $(cat file.csv | wc -l) -ge "2" ]
+then
+   echo "This has more than 1 line."
+else
+   echo "This has less than 2 lines."
+fi
+# *********
+
+
+###########################################
+$a=$(echo "ToUpperCase" | tr a-z A-Z); echo $a
+TOUPPERCASE
+
+$a=$(echo "ToLowerCase" | tr A-Z a-z); echo $a
+tolowercase
+# *********
+
+
+###########################################
+# localsend information
+install flatpak
+flatpak install flathub org.localsend.localsend_app
+
+run flatpak
+flatpak run org.localsend.localsend_app
+# *********
+
+
+#Startup_Chrome_shortcuts
+#---------------------------------
+#chrome://settings/help
+#chrome://settings/safetyCheck
+#chrome://settings/privacy
+
+#############################################
+## add these lines to the end of .bashrc
+
+if [ -f ~/bash_aliases ]; then
+    . ~/bash_aliases
+fi
+
+if [ -f ~/bash_functions ]; then
+    . ~/bash_functions
+fi
+###########################################
+
+                              sudo awk -F\' '/menuentry / {print $2}' /boot/grub/grub.cfg
+alias list_grub_boot_entries="sudo awk -F\' '/menuentry / {print \$2}\' /boot/grub/grub.cfg" 
+
+#get hard disk information
+lsblk -e7
+
+
+____
+echo $my_hostname
+Laptop_1
+
+
+cat /etc/profile.d/myhost.sh 
+export my_hostname="Laptop_1"
+____
+
+____ anydesk
+wget https://download.anydesk.com/linux/anydesk_7.0.0-1_amd64.deb
+sudo dpkg -i anydesk_7.0.0-1_amd64.deb
+sudo apt --fix-broken install
+anydesk --version
+anydesk
+
+____ localsend
+sudo apt install flatpak -y
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install flathub org.localsend.localsend_app
+sudo ufw allow 53317/udp
+sudo ufw allow 53317/tcp
+flatpak run org.localsend.localsend_app
+
+#myshare
+sudo mkdir -p /mnt/myshare
+
+#
+echo yt-dlp --no-mtime url 
+
+echo startup icon "gnome-terminal --working-directory=/$HOME"
+
+#after CDPATH installed cd Downloads will work even if the current path is /etc
+cd Downloads 
+
+
+ ###   pcal 1 2023 12 -s 0.9:0.2:0.1/1.0:1.0:0.8  -f my_dates_list.txt -n Times-Roman/12    -o 2023_monthly_color.ps
+ ###   pcal 1 2023 12 -s 0.9:0.2:0.1/1.0:1.0:0.8  -o 2023_monthly_color.ps
+ ###   ps2pdf 2023_monthly_color.ps
+ ###   pcal 1 2025 12 -s 0.9:0.2:0.1/1.0:1.0:0.8  -o 2025_monthly_color.ps
+ ###   ps2pdf 2025_monthly_color.ps
+ 
+
