@@ -1,0 +1,80 @@
+---
+- name: Install Notepad++ (Portable) and IrfanView (Local EXE) via Wine
+  hosts: localhost
+  connection: local
+
+
+#
+# ansible-playbook ansible_wine.yml --ask-become-pass 
+# 
+
+
+  vars:
+    # Directories for Notepad++ (keeping it portable is easier)
+    apps_dir: "{{ ansible_env.HOME }}/.local/share/wine-apps"
+    npp_dir: "{{ ansible_env.HOME }}/.local/share/wine-apps/notepadplusplus"
+    
+    # Path to your local IrfanView installer
+    # Adjust 'wineapps' if the folder is named differently
+    iv_installer_path: "{{ playbook_dir }}/wineapps/iview473_x64_setup.exe"
+    
+    # Where IrfanView usually installs itself inside Wine
+    iv_exe_path: "{{ ansible_env.HOME }}/.wine/drive_c/Program Files/IrfanView/i_view64.exe"
+
+  tasks:
+    - name: Install Wine and utility packages
+      become: true
+      apt:
+        name:
+          - wine
+          - wine64
+          - wget
+          - unzip
+        state: present
+        update_cache: yes
+
+    - name: Create directory for Notepad++
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ apps_dir }}"
+        - "{{ npp_dir }}"
+
+    - name: Download and extract Notepad++ (Portable)
+      unarchive:
+        src: "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.6.5/npp.8.6.5.portable.x64.zip"
+        dest: "{{ npp_dir }}"
+        remote_src: yes
+
+    - name: Install IrfanView using local EXE
+      shell: "wine {{ iv_installer_path }} /silent /desktop=0 /thumbs=0 /group=1 /allusers=0"
+      args:
+        creates: "{{ iv_exe_path }}"
+
+    - name: Create Notepad++ Desktop shortcut
+      copy:
+        dest: "{{ ansible_env.HOME }}/Desktop/NotepadPlusPlus.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=Notepad++
+          Exec=wine {{ npp_dir }}/notepad++.exe
+          Icon=text-editor
+          Terminal=false
+          Categories=Utility;TextEditor;
+        mode: '0755'
+
+    - name: Create IrfanView Desktop shortcut
+      copy:
+        dest: "{{ ansible_env.HOME }}/Desktop/IrfanView.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=IrfanView
+          Exec=wine "{{ iv_exe_path }}"
+          Icon=image-viewer
+          Terminal=false
+          Categories=Graphics;
+        mode: '0755'
