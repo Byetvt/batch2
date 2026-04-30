@@ -4,6 +4,7 @@
 
 # Define the target path
 TARGET_DIR="$HOME/ansible-config"
+TARGET_DIR2="$HOME/ansible-config/wineapps"
 
 # 1. Create the config directory if it doesn't exist
 if [ ! -d "$TARGET_DIR" ]; then
@@ -36,6 +37,17 @@ fi
 # 3. Change directory to the config folder
 cd "$TARGET_DIR" || exit
 echo "Current directory: $(pwd)"
+
+
+# 3B. Create the wineapps subdirectory if it doesn't exist
+if [ ! -d "$TARGET_DIR2" ]; then
+    echo "Directory $TARGET_DIR2 does not exist. Creating it now..."
+    mkdir -p "$TARGET_DIR2"
+    echo "Success: Directory created."
+else
+    echo "Directory $TARGET_DIR2 already exists. No action needed."
+fi
+
 
 # 4. Download YAML files into the target directory
 echo "Downloading Ansible playbooks to $TARGET_DIR..."
