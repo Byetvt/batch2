@@ -149,3 +149,63 @@
           Name=Terminal
           Comment=Open terminal on login
         mode: '0644'
+
+
+
+
+
+
+
+
+
+#---
+#- name: Configure Nemo Columns on Mint Systems
+#  hosts: localhost
+#  connection: local
+#  tasks:
+    - name: Check if Nemo is installed
+      ansible.builtin.command: which nemo
+      register: nemo_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Apply Nemo MIME column settings
+      community.general.dconf:
+        key: "/org/nemo/list-view/default-visible-columns"
+        value: "['name', 'size', 'type', 'mime_type', 'date_modified']"
+        state: present
+      # Only run if the OS is Mint OR if the nemo binary was found
+      when: >
+        ansible_distribution == 'Linux Mint' or 
+        nemo_check.rc == 0
+
+    - name: Ensure YAML custom MIME type exists
+      ansible.builtin.copy:
+        dest: "~/.local/share/mime/packages/user-yaml.xml"
+        content: |
+          <?xml version="1.0" encoding="UTF-8"?>
+          <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+              <mime-type type="application/x-yaml">
+                  <comment>YAML Configuration</comment>
+                  <glob pattern="*.yml"/>
+                  <glob pattern="*.yaml"/>
+                  <sub-class-of type="text/plain"/>
+              </mime-type>
+          </mime-info>
+        mode: '0644'
+      when: nemo_check.rc == 0
+
+    - name: Update MIME database
+      ansible.builtin.command: update-mime-database ~/.local/share/mime
+      when: nemo_check.rc == 0
+      changed_when: true
+
+
+
+
+
+
+
+
+
+
