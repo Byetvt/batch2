@@ -1,6 +1,24 @@
+# use this to run the .yml
+# ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv
 ---
 - import_playbook: ansible_packages.yml
 - import_playbook: ansible_flatpaks.yml
 - import_playbook: ansible_bash.yml
-  # use this to run the .yml
-  # ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv
+
+- name: Check for and run local-only configuration
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Check if local-only playbook exists
+      ansible.builtin.stat:
+        path: "{{ lookup('env', 'HOME') }}/no_git_ansible-local-only/nogit_ansible_local.yml"
+      register: local_playbook
+
+    - name: Run local-only playbook if found
+      ansible.builtin.include_tasks: "{{ lookup('env', 'HOME') }}/no_git_ansible-local-only/nogit_ansible_local.yml"
+      when: local_playbook.stat.exists
+
+    - name: Notify if local-only playbook is missing
+      ansible.builtin.debug:
+        msg: "No_Git local yml playbook found"
+      when: not local_playbook.stat.exists
