@@ -1,0 +1,64 @@
+# ansible-playbook ansible_dosbox.yml --ask-become-pass
+# ansible-playbook ansible_dosbox.yml --ask-become-pass
+---
+- name: Setup DOSBox with custom C drive
+  hosts: localhost
+  connection: local
+  vars:
+    # Using absolute path via lookup to be safe
+    dosbox_dir: "{{ lookup('env', 'HOME') }}/dosbox"
+    dosbox_config_dir: "{{ lookup('env', 'HOME') }}/.dosbox"
+
+  tasks:
+    - name: Install DOSBox
+      become: true
+      package:
+        name: dosbox
+        state: present
+
+    - name: Create the local DOSBox C-drive directory
+      file:
+        path: "{{ dosbox_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Ensure DOSBox config directory exists
+      file:
+        path: "{{ dosbox_config_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Generate default config if it doesn't exist
+      shell: "dosbox -eraseconf -exit"
+      args:
+        creates: "{{ dosbox_config_dir }}/dosbox*.conf"
+      failed_when: false
+
+    - name: Find all DOSBox config files
+      find:
+        paths: "{{ dosbox_config_dir }}"
+        patterns: "dosbox*.conf"
+      register: found_configs
+
+    - name: Force mount commands into autoexec
+      blockinfile:
+        path: "{{ item.path }}"
+        marker: "# {mark} ANSIBLE MOUNT BLOCK"
+        insertafter: EOF
+        block: |
+          [autoexec]
+          mount c {{ dosbox_dir }}
+          c:
+      with_items: "{{ found_configs.files }}"
+      when: found_configs.matched > 0
+
+    - name: Verify configuration
+      shell: "grep 'mount c' {{ item.path }}"
+      with_items: "{{ found_configs.files }}"
+      register: grep_verify
+      changed_when: false
+
+    - name: Report Status
+      debug:
+        msg: "DOSBox configured. Drive C points to {{ dosbox_dir }}"
+
