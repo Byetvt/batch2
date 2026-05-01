@@ -93,7 +93,6 @@ flatpak run org.localsend.localsend_app
 sudo mkdir -p /mnt/myshare
 
 #
-echo yt-dlp --no-mtime url 
 
 echo startup icon "gnome-terminal --working-directory=/$HOME"
 
