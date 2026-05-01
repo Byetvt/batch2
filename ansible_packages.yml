@@ -65,9 +65,17 @@
       become: true
       package: name=kolourpaint state=present
 
+    - name: Install etherwake
+      become: true
+      package: name=etherwake state=present
+
     - name: Install ffmpeg
       become: true
       package: name=ffmpeg state=present
+
+    - name: Install simplescreenrecorder
+      become: true
+      package: name=simplescreenrecorder state=present
 
     - name: Install figlet
       become: true
