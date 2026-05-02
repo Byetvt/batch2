@@ -161,6 +161,14 @@
       become: true
       package: name=nmap state=present
 
+    - name: Install tree
+      become: true
+      package: name=tree state=present
+
+    - name: Install eza
+      become: true
+      package: name=eza state=present
+
     - name: Install neofetch
       become: true
       package: name=neofetch state=present
