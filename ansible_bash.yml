@@ -179,6 +179,14 @@
         ansible_distribution == 'Linux Mint' or 
         nemo_check.rc == 0
 
+
+    - name: Ensure MIME packages directory exists
+      ansible.builtin.file:
+        path: "~/.local/share/mime/packages"
+        state: directory
+        mode: '0755'
+      when: nemo_check.rc == 0
+
     - name: Ensure YAML custom MIME type exists
       ansible.builtin.copy:
         dest: "~/.local/share/mime/packages/user-yaml.xml"
