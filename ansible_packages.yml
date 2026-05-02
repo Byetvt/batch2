@@ -157,6 +157,10 @@
       become: true
       package: name=nemo-terminal state=present
 
+    - name: Install nmap
+      become: true
+      package: name=nmap state=present
+
     - name: Install neofetch
       become: true
       package: name=neofetch state=present

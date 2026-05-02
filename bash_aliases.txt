@@ -73,6 +73,8 @@ alias upflat="sudo flatpak update"
 alias mint_cinna_later_logout_now="cinnamon-session-quit --logout --no-prompt"
 alias gnomeout="gnome-session-quit --logout --no-prompt"
 alias getvulkan='vulkaninfo | grep "GPU id"'
+
+alias show_nics="ip link show"
 #
 #
 ###alias now='date +"%m-%d-%Y %T"'
