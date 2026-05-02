@@ -25,8 +25,8 @@
 
     - name: Get Desktop Info
       shell: |
-        echo "Theme: $(gsettings get org.cinnamon.desktop.interface gtk-theme | tr -d \"\'\")"
-        echo "Icons: $(gsettings get org.cinnamon.desktop.interface icon-theme | tr -d \"\'\")"
+        echo "Theme: $(gsettings get org.cinnamon.desktop.interface gtk-theme | tr -d \"\'\" || echo 'N/A')"
+        echo "Icons: $(gsettings get org.cinnamon.desktop.interface icon-theme | tr -d \"\'\" || echo 'N/A')"
       register: desktop_info
       changed_when: false
 
@@ -46,6 +46,12 @@
         echo "$TYPE $ECC"
       register: ram_details
       changed_when: false
+
+    - name: Get EFI Boot Entries
+      shell: "efibootmgr | grep '^Boot[0-9]' || echo 'No EFI entries found (Legacy BIOS or No EFI Partition)'"
+      register: efi_entries
+      changed_when: false
+      failed_when: false
 
     - name: Get Block Devices (lsblk)
       shell: "lsblk --output NAME,SERIAL,MODEL,TRAN,TYPE,SIZE,FSTYPE,MOUNTPOINT"
@@ -93,7 +99,7 @@
 
           EFI BOOT ENTRIES
           ---------------------------------------
-          {{ lookup('pipe', 'efibootmgr | grep "^Boot[0-9]"') }}
+          {{ efi_entries.stdout }}
 
           DRIVE AND PARTITION LAYOUT (lsblk)
           ---------------------------------------
@@ -105,20 +111,11 @@
 
           ------------------------------
 
-
-
-    - name: Display Report Path in Terminal
+    - name: Final Terminal Summary
       debug:
-        msg: "Report saved to: {{ full_report_path }}"
+        msg: "Report successfully saved to: {{ full_report_path }}"
 
     - name: Send Desktop Notification
       shell: "notify-send 'Ansible Report Complete' 'Saved to: {{ full_report_path }}'"
       changed_when: false
       failed_when: false
-
-    - name: Final Terminal Summary
-      debug:
-        msg: "Report saved to: {{ full_report_path }}"
-
-
-
