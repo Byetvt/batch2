@@ -1,8 +1,7 @@
 # use this to run the .yml
-# ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv
-# ansible-playbook main.yml -i "localhost," -c local -K
-# debug
-# ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -i "localhost," -c local -K -vvv
+# normal  ansible-playbook main.yml -i "localhost," -c local -K
+# debug   ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -i "localhost," -c local -K -vvv
+#
 #
 ---
 # Play 1: Setup, Prompts, and File Verification
@@ -38,7 +37,7 @@
 
     - name: Check if local-only playbook exists
       ansible.builtin.stat:
-        path: "{{ lookup('env', 'HOME') }}/no_git_ansible-local-only/nogit_ansible_local.yml"
+        path: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
       register: local_playbook_stat
 
 # Play 2: Standard Always-Run Imports
@@ -47,33 +46,28 @@
 - import_playbook: ansible_bash.yml
 
 # Plays 3-7: Optional Playbook Imports (Full Playbooks)
-- name: Run DOSBox
-  import_playbook: ansible_dosbox.yml
+- import_playbook: ansible_dosbox.yml
   when: hostvars['localhost']['run_dosbox'] | lower == 'y'
 
-- name: Run Wine
-  import_playbook: ansible_wine.yml
+- import_playbook: ansible_wine.yml
   when: hostvars['localhost']['run_wine'] | lower == 'y'
 
-- name: Run AI Stack
-  import_playbook: setup_ai_stack.yml
+- import_playbook: setup_ai_stack.yml
   when: hostvars['localhost']['run_ai'] | lower == 'y'
 
-- name: Run System Report
-  import_playbook: system_report.yml
+- import_playbook: system_report.yml
   when: hostvars['localhost']['run_report'] | lower == 'y'
 
-- name: Run rEFInd Build
-  import_playbook: build_refind_image.yml
+- import_playbook: build_refind_image.yml
   when: hostvars['localhost']['run_refind'] | lower == 'y'
 
-# Play 8: Run Local Tasks (Verified for files that are just lists of - name:)
+# Play 8: Run Local Tasks
 - name: Execute Local-only Configuration
   hosts: localhost
   connection: local
   tasks:
     - name: Include local-only tasks if file exists
-      ansible.builtin.include_tasks: "{{ lookup('env', 'HOME') }}/no_git_ansible-local-only/nogit_ansible_local.yml"
+      ansible.builtin.include_tasks: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
       when: hostvars['localhost']['local_playbook_stat']['stat']['exists'] | default(false)
 
     - name: Notify if local-only file was missing
@@ -81,4 +75,6 @@
         msg: "No_Git local yml file NOT found"
       when: not hostvars['localhost']['local_playbook_stat']['stat']['exists']
 
+# Play 9: Local-only Configuration (Bookmarks)
+- import_playbook: "../no-git-ansible-local-only/nogit_generate_bookmarks.yml"
 
