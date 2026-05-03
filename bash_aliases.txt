@@ -6,9 +6,9 @@
 ###
 ###
 ## Run the functions
-echo Run the functions
-source bash_functions
-fnc_now
+###echo Run the functions
+###source bash_functions
+###fnc_now
 ###
 #
 #
