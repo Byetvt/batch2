@@ -55,9 +55,29 @@
       debug:
         msg: "Proceeding with tasks..."
 
-    - name: Install aisleriot
+#    - name: Install aisleriot
+#      become: true
+#      package: name=aisleriot state=present update_cache=yes
+
+
+    - name: Continue with aisleriot special setup
+      debug:
+        msg: "Continue with aisleriot special setup..."
+
+    - name: Install aisleriot with automatic lock handling
       become: true
-      package: name=aisleriot state=present update_cache=yes
+      apt:
+        name: aisleriot
+        state: present
+        update_cache: yes
+        lock_timeout: 300  # Wait up to 5 minutes for the apt lock to free up
+      register: apt_res
+      retries: 3
+      delay: 10
+      until: apt_res is success
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+
 
     - name: Install alacritty
       become: true
