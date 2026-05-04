@@ -13,25 +13,30 @@
       debug:
         msg: "User: {{ ansible_user_id }} | Home: {{ ansible_user_dir }}"
 
+
     - name: Safety Check Block
       when: ansible_distribution == 'Linux Mint'
       block:
         - name: Search for mintupdate process
-          command: pgrep -f "mintupdate"
+          command: pgrep -x "mintUpdate"
           register: update_manager_check
           failed_when: false
           changed_when: false
+          # THIS IS THE FIX:
+          check_mode: no
 
         - name: Handle running Update Manager
           when: update_manager_check.rc == 0
           block:
+
+
             - name: Alert user (Desktop)
               command: notify-send "Ansible" "Update Manager active. Stopping."
               failed_when: false
 
             - name: Alert user (Terminal)
               pause:
-                seconds: 5
+                seconds: 15
                 prompt: |
                   -------------------------------------------------------
                   WARNING: Mint Update Manager is currently running.
@@ -39,8 +44,12 @@
                   Please close the Update Manager and run this again.
                   -------------------------------------------------------
 
-            - name: End Playbook Gracefully
-              meta: end_play
+            - name: Force Terminate Playbook
+              fail:
+                msg: "Playbook stopped by safety check: Mint Update Manager is active."
+
+
+
 
     - name: Continue with setup
       debug:
