@@ -13,7 +13,6 @@
       debug:
         msg: "User: {{ ansible_user_id }} | Home: {{ ansible_user_dir }}"
 
-
     - name: Safety Check Block
       when: ansible_distribution == 'Linux Mint'
       block:
@@ -22,14 +21,11 @@
           register: update_manager_check
           failed_when: false
           changed_when: false
-          # THIS IS THE FIX:
           check_mode: no
 
         - name: Handle running Update Manager
           when: update_manager_check.rc == 0
           block:
-
-
             - name: Alert user (Desktop)
               command: notify-send "Ansible" "Update Manager active. Stopping."
               failed_when: false
@@ -48,17 +44,9 @@
               fail:
                 msg: "Playbook stopped by safety check: Mint Update Manager is active."
 
-
-
-
     - name: Continue with setup
       debug:
         msg: "Proceeding with tasks..."
-
-#    - name: Install aisleriot
-#      become: true
-#      package: name=aisleriot state=present update_cache=yes
-
 
     - name: Continue with aisleriot special setup
       debug:
@@ -70,266 +58,392 @@
         name: aisleriot
         state: present
         update_cache: yes
-        lock_timeout: 300  # Wait up to 5 minutes for the apt lock to free up
-      register: apt_res
+        lock_timeout: 300 
+      register: res_aisleriot
+      ignore_errors: true
       retries: 3
       delay: 10
-      until: apt_res is success
+      until: res_aisleriot is success
       environment:
         DEBIAN_FRONTEND: noninteractive
-
 
     - name: Install alacritty
       become: true
       package: name=alacritty state=present
+      register: res_alacritty
+      ignore_errors: true
 
     - name: Install thunderbird
       become: true
       package: name=thunderbird state=present
+      register: res_thunderbird
+      ignore_errors: true
 
     - name: REMOVE angrydd
       become: true
       package: name=angrydd state=absent
+      register: res_angrydd
+      ignore_errors: true
 
     - name: Install bat
       become: true
       package: name=bat state=present
+      register: res_bat
+      ignore_errors: true
 
     - name: Install bmon
       become: true
       package: name=bmon state=present
+      register: res_bmon
+      ignore_errors: true
 
     - name: Install btop
       become: true
       package: name=btop state=present
+      register: res_btop
+      ignore_errors: true
 
     - name: Install cherrytree
       become: true
       package: name=cherrytree state=present
+      register: res_cherrytree
+      ignore_errors: true
 
     - name: Install chromium
       become: true
       package: name=chromium state=present
+      register: res_chromium
+      ignore_errors: true
 
     - name: Install cifs-utils
       become: true
       package: name=cifs-utils state=present
+      register: res_cifs_utils
+      ignore_errors: true
 
     - name: Install cmatrix
       become: true
       package: name=cmatrix state=present
+      register: res_cmatrix
+      ignore_errors: true
 
     - name: Install cpufetch
       become: true
       package: name=cpufetch state=present
+      register: res_cpufetch
+      ignore_errors: true
 
     - name: Install kdiff3
       become: true
       package: name=kdiff3 state=present
+      register: res_kdiff3
+      ignore_errors: true
 
     - name: Install kolourpaint
       become: true
       package: name=kolourpaint state=present
+      register: res_kolourpaint
+      ignore_errors: true
 
     - name: Install ffmpeg
       become: true
       package: name=ffmpeg state=present
+      register: res_ffmpeg
+      ignore_errors: true
 
     - name: Install simplescreenrecorder
       become: true
       package: name=simplescreenrecorder state=present
+      register: res_simplescreenrecorder
+      ignore_errors: true
 
     - name: Install figlet
       become: true
       package: name=figlet state=present
+      register: res_figlet
+      ignore_errors: true
 
     - name: Install flatpak
       become: true
       package: name=flatpak state=present
+      register: res_flatpak
+      ignore_errors: true
 
     - name: Install freerdp2-x11
       become: true
       package: name=freerdp2-x11 state=present
+      register: res_freerdp2
+      ignore_errors: true
 
     - name: Install freetuxtv
       become: true
       package: name=freetuxtv state=present
+      register: res_freetuxtv
+      ignore_errors: true
 
     - name: Install fzf
       become: true
       package: name=fzf state=present
+      register: res_fzf
+      ignore_errors: true
 
     - name: Install git
       become: true
       package: name=git state=present
+      register: res_git
+      ignore_errors: true
 
     - name: Install glances
       become: true
       package: name=glances state=present
+      register: res_glances
+      ignore_errors: true
 
     - name: Install gparted
       become: true
       package: name=gparted state=present
+      register: res_gparted
+      ignore_errors: true
 
     - name: Install hardinfo
       become: true
       package: name=hardinfo state=present
+      register: res_hardinfo
+      ignore_errors: true
 
     - name: Install hashalot
       become: true
       package: name=hashalot state=present
+      register: res_hashalot
+      ignore_errors: true
 
     - name: Install inxi
       become: true
       package: name=inxi state=present
+      register: res_inxi
+      ignore_errors: true
 
     - name: Install kate
       become: true
       package: name=kate state=present
+      register: res_kate
+      ignore_errors: true
 
     - name: Install keepassxc
       become: true
       package: name=keepassxc state=present
+      register: res_keepassxc
+      ignore_errors: true
 
     - name: Install kitty
       become: true
       package: name=kitty state=present
+      register: res_kitty
+      ignore_errors: true
 
     - name: Install krita
       become: true
       package: name=krita state=present
+      register: res_krita
+      ignore_errors: true
 
     - name: Install krusader
       become: true
       package: name=krusader state=present
+      register: res_krusader
+      ignore_errors: true
 
     - name: Install ksnip
       become: true
       package: name=ksnip state=present
+      register: res_ksnip
+      ignore_errors: true
 
     - name: Install mc
       become: true
       package: name=mc state=present
+      register: res_mc
+      ignore_errors: true
 
     - name: Install ncal
       become: true
       package: name=ncal state=present
+      register: res_ncal
+      ignore_errors: true
 
     - name: Install ncdu
       become: true
       package: name=ncdu state=present
+      register: res_ncdu
+      ignore_errors: true
 
     - name: Install nemo-terminal
       become: true
       package: name=nemo-terminal state=present
+      register: res_nemo_terminal
+      ignore_errors: true
 
     - name: Install nmap
       become: true
       package: name=nmap state=present
+      register: res_nmap
+      ignore_errors: true
 
     - name: Install tree
       become: true
       package: name=tree state=present
+      register: res_tree
+      ignore_errors: true
 
     - name: Install eza
       become: true
       package: name=eza state=present
+      register: res_eza
+      ignore_errors: true
 
     - name: Install neofetch
       become: true
       package: name=neofetch state=present
+      register: res_neofetch
+      ignore_errors: true
 
     - name: Install neovim
       become: true
       package: name=neovim state=present
+      register: res_neovim
+      ignore_errors: true
 
     - name: Install netdiscover
       become: true
       package: name=netdiscover state=present
+      register: res_netdiscover
+      ignore_errors: true
 
     - name: Install net-tools
       become: true
       package: name=net-tools state=present
+      register: res_net_tools
+      ignore_errors: true
 
     - name: Install nmon
       become: true
       package: name=nmon state=present
+      register: res_nmon
+      ignore_errors: true
 
     - name: Install pcal
       become: true
       package: name=pcal state=present
+      register: res_pcal
+      ignore_errors: true
 
     - name: Install python3-pcbasic
       become: true
       package: name=python3-pcbasic state=present
+      register: res_pcbasic
+      ignore_errors: true
 
     - name: Install ghostscript (provides ps2pdf)
       become: true
       package: name=ghostscript state=present
+      register: res_ghostscript
+      ignore_errors: true
 
     - name: Install ripgrep
       become: true
       package: name=ripgrep state=present
+      register: res_ripgrep
+      ignore_errors: true
 
     - name: Install rxvt-unicode
       become: true
       package: name=rxvt-unicode state=present
+      register: res_rxvt
+      ignore_errors: true
 
     - name: Install smbclient
       become: true
       package: name=smbclient state=present
+      register: res_smbclient
+      ignore_errors: true
 
     - name: Install tealdeer
       become: true
       package: name=tealdeer state=present
+      register: res_tealdeer
+      ignore_errors: true
 
     - name: Install terminator
       become: true
       package: name=terminator state=present
+      register: res_terminator
+      ignore_errors: true
 
     - name: Install tilix
       become: true
       package: name=tilix state=present
+      register: res_tilix
+      ignore_errors: true
 
     - name: Install tldr
       become: true
       package: name=tldr state=absent
+      register: res_tldr
+      ignore_errors: true
 
     - name: Install ufw
       become: true
       package: name=ufw state=present
+      register: res_ufw
+      ignore_errors: true
 
     - name: Install vlc
       become: true
       package: name=vlc state=present
+      register: res_vlc
+      ignore_errors: true
 
     - name: Install geany
       become: true
       package: name=geany state=present
+      register: res_geany
+      ignore_errors: true
 
     - name: Install flameshot
       become: true
       package: name=flameshot state=present
+      register: res_flameshot
+      ignore_errors: true
 
     - name: Install qalc
       become: true
       package: name=qalc state=present
+      register: res_qalc
+      ignore_errors: true
 
     - name: Install qalculate-gtk
       become: true
       package: name=qalculate-gtk state=present
+      register: res_qalculate_gtk
+      ignore_errors: true
 
     - name: Install vulkan-tools
       become: true
       package: name=vulkan-tools state=present
+      register: res_vulkan
+      ignore_errors: true
 
     - name: Install plocate
       become: true
       package: name=plocate state=present
+      register: res_plocate
+      ignore_errors: true
 
     - name: REMOVE MS Core Fonts
       become: true
       package: name=ttf-mscorefonts-installer state=absent
+      register: res_mscorefonts
+      ignore_errors: true
 
     - name: Enable UFW firewall
       become: true
@@ -338,5 +452,81 @@
     - name: Update plocate database
       become: true
       command: updatedb
+
+    - name: Display Package Summary
+      vars:
+        all_results:
+          - { n: 'aisleriot', r: "{{ res_aisleriot }}" }
+          - { n: 'alacritty', r: "{{ res_alacritty }}" }
+          - { n: 'thunderbird', r: "{{ res_thunderbird }}" }
+          - { n: 'angrydd', r: "{{ res_angrydd }}" }
+          - { n: 'bat', r: "{{ res_bat }}" }
+          - { n: 'bmon', r: "{{ res_bmon }}" }
+          - { n: 'btop', r: "{{ res_btop }}" }
+          - { n: 'cherrytree', r: "{{ res_cherrytree }}" }
+          - { n: 'chromium', r: "{{ res_chromium }}" }
+          - { n: 'cifs-utils', r: "{{ res_cifs_utils }}" }
+          - { n: 'cmatrix', r: "{{ res_cmatrix }}" }
+          - { n: 'cpufetch', r: "{{ res_cpufetch }}" }
+          - { n: 'kdiff3', r: "{{ res_kdiff3 }}" }
+          - { n: 'kolourpaint', r: "{{ res_kolourpaint }}" }
+          - { n: 'ffmpeg', r: "{{ res_ffmpeg }}" }
+          - { n: 'simplescreenrecorder', r: "{{ res_simplescreenrecorder }}" }
+          - { n: 'figlet', r: "{{ res_figlet }}" }
+          - { n: 'flatpak', r: "{{ res_flatpak }}" }
+          - { n: 'freerdp2-x11', r: "{{ res_freerdp2 }}" }
+          - { n: 'freetuxtv', r: "{{ res_freetuxtv }}" }
+          - { n: 'fzf', r: "{{ res_fzf }}" }
+          - { n: 'git', r: "{{ res_git }}" }
+          - { n: 'glances', r: "{{ res_glances }}" }
+          - { n: 'gparted', r: "{{ res_gparted }}" }
+          - { n: 'hardinfo', r: "{{ res_hardinfo }}" }
+          - { n: 'hashalot', r: "{{ res_hashalot }}" }
+          - { n: 'inxi', r: "{{ res_inxi }}" }
+          - { n: 'kate', r: "{{ res_kate }}" }
+          - { n: 'keepassxc', r: "{{ res_keepassxc }}" }
+          - { n: 'kitty', r: "{{ res_kitty }}" }
+          - { n: 'krita', r: "{{ res_krita }}" }
+          - { n: 'krusader', r: "{{ res_krusader }}" }
+          - { n: 'ksnip', r: "{{ res_ksnip }}" }
+          - { n: 'mc', r: "{{ res_mc }}" }
+          - { n: 'ncal', r: "{{ res_ncal }}" }
+          - { n: 'ncdu', r: "{{ res_ncdu }}" }
+          - { n: 'nemo-terminal', r: "{{ res_nemo_terminal }}" }
+          - { n: 'nmap', r: "{{ res_nmap }}" }
+          - { n: 'tree', r: "{{ res_tree }}" }
+          - { n: 'eza', r: "{{ res_eza }}" }
+          - { n: 'neofetch', r: "{{ res_neofetch }}" }
+          - { n: 'neovim', r: "{{ res_neovim }}" }
+          - { n: 'netdiscover', r: "{{ res_netdiscover }}" }
+          - { n: 'net-tools', r: "{{ res_net_tools }}" }
+          - { n: 'nmon', r: "{{ res_nmon }}" }
+          - { n: 'pcal', r: "{{ res_pcal }}" }
+          - { n: 'python3-pcbasic', r: "{{ res_pcbasic }}" }
+          - { n: 'ghostscript', r: "{{ res_ghostscript }}" }
+          - { n: 'ripgrep', r: "{{ res_ripgrep }}" }
+          - { n: 'rxvt-unicode', r: "{{ res_rxvt }}" }
+          - { n: 'smbclient', r: "{{ res_smbclient }}" }
+          - { n: 'tealdeer', r: "{{ res_tealdeer }}" }
+          - { n: 'terminator', r: "{{ res_terminator }}" }
+          - { n: 'tilix', r: "{{ res_tilix }}" }
+          - { n: 'tldr', r: "{{ res_tldr }}" }
+          - { n: 'ufw', r: "{{ res_ufw }}" }
+          - { n: 'vlc', r: "{{ res_vlc }}" }
+          - { n: 'geany', r: "{{ res_geany }}" }
+          - { n: 'flameshot', r: "{{ res_flameshot }}" }
+          - { n: 'qalc', r: "{{ res_qalc }}" }
+          - { n: 'qalculate-gtk', r: "{{ res_qalculate_gtk }}" }
+          - { n: 'vulkan-tools', r: "{{ res_vulkan }}" }
+          - { n: 'plocate', r: "{{ res_plocate }}" }
+          - { n: 'ttf-mscorefonts-installer', r: "{{ res_mscorefonts }}" }
+      debug:
+        msg: |
+          THE FOLLOWING PACKAGES FAILED TO INSTALL:
+          ------------------------------------------
+          {{ all_results | selectattr('r.failed') | map(attribute='n') | list | join('\n') }}
+          ------------------------------------------
+      when: all_results | selectattr('r.failed') | list | length > 0
+
 
 
