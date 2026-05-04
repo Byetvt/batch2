@@ -1,0 +1,3 @@
+# Source files from the config directory
+[[ -f /home/user01/ansible-config/bash_aliases.txt ]] && . /home/user01/ansible-config/bash_aliases.txt
+[[ -f /home/user01/ansible-config/bash_functions.txt ]] && . /home/user01/ansible-config/bash_functions.txt

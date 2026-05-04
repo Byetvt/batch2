@@ -1,0 +1,19 @@
+Available 64-bit downloads
+
+IrfanView - english version:
+Download IrfanView-64 English (Version 4.73, Self extracting EXE file, 4.25 MB) 
+(SHA-256 checksum: 724e0a7aa97d10ad76843552ddf648521f60f2809398f7ca9ad4ae4726010e08)
+Download IrfanView-64 English (Version 4.73, ZIP file, 3.79 MB) 
+(SHA-256 checksum: 433936d26b97057b16026ea6b6c2897e5941e38cd980e424172bc0d980242fd4)
+
+
+
+
+
+
+
+
+user01@user01-B450M-DS3H-WIFI:~/Downloads$ sha256sum iview473_x64_setup.exe 
+724e0a7aa97d10ad76843552ddf648521f60f2809398f7ca9ad4ae4726010e08  iview473_x64_setup.exe
+
+
