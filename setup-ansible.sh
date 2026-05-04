@@ -68,7 +68,7 @@ ansible-galaxy collection install community.general
 # 5. Display helpful usage commands
 echo "----------------------------------------------------------------"
 echo "Usage Tips:"
-echo "Full debug install == ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv"
+echo "Full debug install == ANSIBLE_LOG_PATH=./ansible_debug.log ansible-playbook main.yml -vvv --ask-become-pass"
 echo "just run install   == ansible-playbook main.yml --ask-become-pass"
 echo "----------------------------------------------------------------"
 

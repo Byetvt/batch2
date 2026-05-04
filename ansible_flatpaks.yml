@@ -93,6 +93,19 @@
       become: false
       flatpak: name=io.bassi.Amberol state=present method=user remote=flathub
 
+    #- name: Flatpak Fsearch
+    #  become: false
+    #  flatpak: name=io.github.cboxdoerfer.FSearch state=present method=user remote=flathub
+
+    - name: Flatpak Fsearch
+      become: false
+      flatpak:
+        name: io.github.cboxdoerfer.FSearch
+        state: present
+        method: user
+        remote: flathub
+
+
     - name: Flatpak Audacity
       become: false
       flatpak: name=org.audacityteam.Audacity state=present method=user remote=flathub
