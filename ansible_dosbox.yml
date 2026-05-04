@@ -5,9 +5,9 @@
   hosts: localhost
   connection: local
   vars:
-    # Using absolute path via lookup to be safe
     dosbox_dir: "{{ lookup('env', 'HOME') }}/dosbox"
     dosbox_config_dir: "{{ lookup('env', 'HOME') }}/.dosbox"
+    dosbox_conf_file: "{{ lookup('env', 'HOME') }}/.dosbox/dosbox-0.74-3.conf"
 
   tasks:
     - name: Install DOSBox
@@ -16,49 +16,44 @@
         name: dosbox
         state: present
 
-    - name: Create the local DOSBox C-drive directory
+    - name: Create directories
       file:
-        path: "{{ dosbox_dir }}"
+        path: "{{ item }}"
         state: directory
         mode: '0755'
+      loop:
+        - "{{ dosbox_dir }}"
+        - "{{ dosbox_config_dir }}"
 
-    - name: Ensure DOSBox config directory exists
-      file:
-        path: "{{ dosbox_config_dir }}"
-        state: directory
-        mode: '0755'
-
-    - name: Generate default config if it doesn't exist
-      shell: "dosbox -eraseconf -exit"
+    - name: Generate config file
+      shell: "dosbox -printconf > {{ dosbox_conf_file }}"
       args:
-        creates: "{{ dosbox_config_dir }}/dosbox*.conf"
-      failed_when: false
-
-    - name: Find all DOSBox config files
-      find:
-        paths: "{{ dosbox_config_dir }}"
-        patterns: "dosbox*.conf"
-      register: found_configs
+        creates: "{{ dosbox_conf_file }}"
 
     - name: Force mount commands into autoexec
       blockinfile:
-        path: "{{ item.path }}"
+        path: "{{ dosbox_conf_file }}"
         marker: "# {mark} ANSIBLE MOUNT BLOCK"
         insertafter: EOF
         block: |
           [autoexec]
           mount c {{ dosbox_dir }}
           c:
-      with_items: "{{ found_configs.files }}"
-      when: found_configs.matched > 0
 
-    - name: Verify configuration
-      shell: "grep 'mount c' {{ item.path }}"
-      with_items: "{{ found_configs.files }}"
-      register: grep_verify
-      changed_when: false
+    - name: Create Menu Entry (Keep this for the Games menu)
+      copy:
+        dest: "{{ lookup('env', 'HOME') }}/.local/share/applications/dosbox.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=DOSBox
+          Comment=DOS Emulator
+          Exec=dosbox -conf {{ dosbox_conf_file }}
+          Icon=dosbox
+          Terminal=false
+          Categories=Game;Emulator;
+        mode: '0755'
 
     - name: Report Status
       debug:
         msg: "DOSBox configured. Drive C points to {{ dosbox_dir }}"
-

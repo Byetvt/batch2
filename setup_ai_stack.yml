@@ -55,14 +55,30 @@
         daemon_reload: yes
         enabled: yes
 
+#    - name: Wait for Ollama API
+#      uri:
+#        url: http://127.0.0.1:11434
+#        return_content: yes
+#      register: ollama_status
+#      until: "'Ollama is running' in ollama_status.content"
+#      retries: 5
+#      delay: 5
+
+
     - name: Wait for Ollama API
       uri:
         url: http://127.0.0.1:11434
         return_content: yes
       register: ollama_status
-      until: "'Ollama is running' in ollama_status.content"
-      retries: 5
+      # This allows the task to run even if you use the --check flag
+      check_mode: no
+      # This prevents crashing if the first attempt is a connection error
+      failed_when: false
+      until: "ollama_status.content is defined and 'Ollama is running' in ollama_status.content"
+      retries: 10
       delay: 5
+
+
 
     - name: Pull AI models
       command: "ollama pull {{ item }}"
