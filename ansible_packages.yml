@@ -453,7 +453,8 @@
       become: true
       command: updatedb
 
-    - name: Display Package Summary
+
+    - name: Package Execution Summary
       vars:
         all_results:
           - { n: 'aisleriot', r: "{{ res_aisleriot }}" }
@@ -521,12 +522,11 @@
           - { n: 'plocate', r: "{{ res_plocate }}" }
           - { n: 'ttf-mscorefonts-installer', r: "{{ res_mscorefonts }}" }
       debug:
-        msg: |
-          THE FOLLOWING PACKAGES FAILED TO INSTALL:
-          ------------------------------------------
-          {{ all_results | selectattr('r.failed') | map(attribute='n') | list | join('\n') }}
-          ------------------------------------------
-      when: all_results | selectattr('r.failed') | list | length > 0
+        msg: "{{ item.n }}: {{ 'FAILED' if item.r.failed else 'SUCCESS' }}"
+      loop: "{{ all_results }}"
+      loop_control:
+        label: "{{ item.n }}"
 
+ 
 
 
