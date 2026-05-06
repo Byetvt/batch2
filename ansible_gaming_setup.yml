@@ -1,3 +1,5 @@
+# ansible-playbook ansible_gaming_setup.yml -K 
+#
 ---
 - name: Install and Initialize Gaming Stack
   hosts: localhost
@@ -28,23 +30,21 @@
         state: present
       when: ansible_os_family == "RedHat"
 
-    - name: Trigger Epic Games Store installation via Lutris
+    - name: Trigger Epic Games Store installation via Lutris (Requires manual 'Install' click)
       become: no
       shell: |
         export DISPLAY=:0
         lutris lutris:epic-games-store &
       async: 60
       poll: 0
-      description: "This opens the Lutris installer window. You will need to click 'Install' to finalize."
 
-    - name: Launch Steam to trigger initial updates
+    - name: Launch Steam to trigger initial updates (Background)
       become: no
       shell: |
         export DISPLAY=:0
         steam -silent &
       async: 60
       poll: 0
-      description: "Launches Steam in the background to start downloading runtime updates."
 
     - name: Launch Lutris to initialize configuration
       become: no
@@ -53,4 +53,3 @@
         lutris &
       async: 60
       poll: 0
-
