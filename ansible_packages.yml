@@ -453,6 +453,58 @@
       become: true
       command: updatedb
 
+###
+    - name: Install calcurse
+      become: true
+      package: name=calcurse state=present
+      register: res_calcurse
+      ignore_errors: true
+
+    - name: Install mpv
+      become: true
+      package: name=mpv state=present
+      register: res_mpv
+      ignore_errors: true
+
+    - name: Install kdeconnect
+      become: true
+      package: name=kdeconnect state=present
+      register: res_kdeconnect
+      ignore_errors: true
+
+    - name: Install ksnip
+      become: true
+      package: name=ksnip state=present
+      register: res_ksnip
+      ignore_errors: true
+
+    - name: Install nomacs
+      become: true
+      package: name=nomacs state=present
+      register: res_nomacs
+      ignore_errors: true
+
+    - name: Install kolourpaint
+      become: true
+      package: name=kolourpaint state=present
+      register: res_kolourpaint
+      ignore_errors: true
+
+    - name: Install gwenview
+      become: true
+      package: name=gwenview state=present
+      register: res_gwenview
+      ignore_errors: true
+
+    - name: Install geeqie
+      become: true
+      package: name=geeqie state=present
+      register: res_geeqie
+      ignore_errors: true
+
+###
+
+
 
     - name: Package Execution Summary
       vars:

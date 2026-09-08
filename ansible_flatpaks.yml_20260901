@@ -134,10 +134,3 @@
       become: false
       flatpak: name=org.prismlauncher.PrismLauncher state=present method=user remote=flathub
 
-    - name: Flatpak opensource VSCode
-      become: false
-      flatpak: name=com.vscodium.codium state=present method=user remote=flathub
-
-
-
-
