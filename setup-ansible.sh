@@ -58,7 +58,12 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_flatpaks.y
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_packages.yml" -O "$TARGET_DIR/ansible_packages.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup_ai_stack.yml" -O "$TARGET_DIR/setup_ai_stack.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/remove_ai_stack.yml" -O "$TARGET_DIR/remove_ai_stack.yml"
-
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_dosbox.yml" -O "$TARGET_DIR/ansible_dosbox.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_gaming_setup.yml" -O "$TARGET_DIR/ansible_gaming_setup.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_wine.yml" -O "$TARGET_DIR/ansible_wine.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/build_refind_image.yml" -O "$TARGET_DIR/build_refind_image.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/Copy_homebrew_install_shell_file.yml" -O "$TARGET_DIR/Copy_homebrew_install_shell_file.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/system_report.yml" -O "$TARGET_DIR/system_report.yml"
 
 echo "Download complete."
 
