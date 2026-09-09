@@ -84,3 +84,7 @@
 # Standard Always-Run Import
 - import_playbook: round2.yml
 
+# Play 11: Keyboard / Mouse
+# Standard Always-Run Import
+- import_playbook: ansible_bash_keyboard_mouse.yml
+
