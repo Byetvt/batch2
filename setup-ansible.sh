@@ -64,7 +64,7 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_wine.yml" 
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/build_refind_image.yml" -O "$TARGET_DIR/build_refind_image.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/Copy_homebrew_install_shell_file.yml" -O "$TARGET_DIR/Copy_homebrew_install_shell_file.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/system_report.yml" -O "$TARGET_DIR/system_report.yml"
-wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash_keyboard_mouse.yml -O "$TARGET_DIR/ansible_bash_keyboard_mouse.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash_keyboard_mouse.yml" -O "$TARGET_DIR/ansible_bash_keyboard_mouse.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/round2.yml" -O "$TARGET_DIR/round2.yml"
 #
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup-ansible.sh" -O $HOME/setup-ansible.shell
