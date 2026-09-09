@@ -68,7 +68,7 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash_keybo
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/round2.yml" -O "$TARGET_DIR/round2.yml"
 #
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup-ansible.sh" -O $HOME/setup-ansible.shell
-wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/brew_msedit_install.sh" -O $HOME/brew_msedit_install.sh
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/brew_msedit_install.sh" -O $TARGET_DIR/brew_msedit_install.sh
 
 
 
