@@ -64,6 +64,9 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_wine.yml" 
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/build_refind_image.yml" -O "$TARGET_DIR/build_refind_image.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/Copy_homebrew_install_shell_file.yml" -O "$TARGET_DIR/Copy_homebrew_install_shell_file.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/system_report.yml" -O "$TARGET_DIR/system_report.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup-ansible.sh" -O $HOME/setup-ansible.shell
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/brew_msedit_install.sh" -O $HOME/brew_msedit_install.sh
+
 
 echo "Download complete."
 

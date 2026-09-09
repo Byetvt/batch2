@@ -1,0 +1,77 @@
+# ansible-playbook round2.yml 
+# This playbook will try to contain all .yml changes made on ar after 09-09-26
+#
+#
+# ansible-playbook round2.yml --ask-become-pass 
+# 
+#
+---
+- name: Workstation Setup - APT Packages round 2
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: DEBUG - Environment Info
+      debug:
+        msg: "User: {{ ansible_user_id }} | Home: {{ ansible_user_dir }}"
+
+    - name: Safety Check Block
+      when: ansible_distribution == 'Linux Mint'
+      block:
+        - name: Search for mintupdate process
+          command: pgrep -x "mintUpdate"
+          register: update_manager_check
+          failed_when: false
+          changed_when: false
+          check_mode: no
+
+        - name: Handle running Update Manager
+          when: update_manager_check.rc == 0
+          block:
+            - name: Alert user (Desktop)
+              command: notify-send "Ansible" "Update Manager active. Stopping."
+              failed_when: false
+
+            - name: Alert user (Terminal)
+              pause:
+                seconds: 15
+                prompt: |
+                  -------------------------------------------------------
+                  WARNING: Mint Update Manager is currently running.
+                  To prevent APT lock errors, this playbook will now exit.
+                  Please close the Update Manager and run this again.
+                  -------------------------------------------------------
+
+            - name: Force Terminate Playbook
+              fail:
+                msg: "Playbook stopped by safety check: Mint Update Manager is active."
+
+    - name: Continue with setup
+      debug:
+        msg: "Proceeding with tasks..."
+
+    - name: Install jp2a jpg to ascii
+      become: true
+      package: name=jp2a state=present
+      register: res_jp2a
+      ignore_errors: true
+
+
+###
+
+
+
+    - name: Package Execution Summary
+      vars:
+        all_results:
+          - { n: 'jp2a', r: "{{ res_jp2a }}" }
+      debug:
+        msg: "{{ item.n }}: {{ 'FAILED' if item.r.failed else 'SUCCESS' }}"
+      loop: "{{ all_results }}"
+      loop_control:
+        label: "{{ item.n }}"
+
+ 
+
+
