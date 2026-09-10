@@ -15,6 +15,10 @@
     cifs_username: "user_goes_here"
     cifs_password: "password_goes_here"
     target_user: "{{ lookup('env', 'USER') | default(ansible_user_id, true) }}"
+    gtk_theme: "Mint-Y-Dark"
+    icon_theme: "Mint-Y-Dark"
+    window_theme: "Mint-Y-Dark"
+    cinnamon_theme: "Mint-Y-Dark"
 
   tasks:
     - name: DEBUG - Environment Info
@@ -86,7 +90,13 @@
         mode: '0600'
         force: false
 
-    - name: Create local mount point directory
+
+    - name: Check if local mount point directory exists
+      ansible.builtin.stat:
+        path: /mnt/routershare
+      register: mount_point_stat
+
+    - name: Create local mount point directory if it does not exist
       become: true
       ansible.builtin.file:
         path: /mnt/routershare
@@ -94,6 +104,7 @@
         owner: "1000"
         group: "1000"
         mode: '0770'
+      when: not mount_point_stat.stat.exists
 
     - name: Mount CIFS share and add to fstab
       become: true
@@ -126,6 +137,44 @@
 
 ###
 
+
+###
+
+#---
+#- name: Enable Dark Mode on Linux Mint Cinnamon
+#  hosts: localhost
+#  connection: local
+#  gather_facts: false
+#
+#  vars:
+#    gtk_theme: "Mint-Y-Dark"
+#    icon_theme: "Mint-Y-Dark"
+#    window_theme: "Mint-Y-Dark"
+#    cinnamon_theme: "Mint-Y-Dark"
+
+#  tasks:
+
+    - name: Set GTK theme to dark variant
+      ansible.builtin.command: >
+        gsettings set org.gnome.desktop.interface gtk-theme '{{ gtk_theme }}'
+      changed_when: true
+
+    - name: Set Icon theme to dark variant
+      ansible.builtin.command: >
+        gsettings set org.gnome.desktop.interface icon-theme '{{ icon_theme }}'
+      changed_when: true
+
+    - name: Set Cinnamon desktop theme
+      ansible.builtin.command: >
+        gsettings set org.cinnamon.theme name '{{ cinnamon_theme }}'
+      changed_when: true
+
+    - name: Set Window Manager (Metacity) theme
+      ansible.builtin.command: >
+        gsettings set org.cinnamon.desktop.wm.preferences theme '{{ window_theme }}'
+      changed_when: true
+
+###
 
 
     - name: Package Execution Summary
