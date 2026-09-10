@@ -115,6 +115,7 @@
         opts: credentials=/etc/samba/creds,vers=1.0,sec=ntlmssp,uid=1000,gid=1000,file_mode=0770,dir_mode=0770
         state: mounted
       register: res_cifs
+      ignore_errors: true
 
     - name: Ensure GTK bookmarks directory exists for the user
       ansible.builtin.file:
@@ -220,7 +221,6 @@
 #       group: root
 #        mode: '0644'
 #      become: true
-
 
 
 
