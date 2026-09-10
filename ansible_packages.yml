@@ -277,11 +277,12 @@
       register: res_ncdu
       ignore_errors: true
 
-    - name: Install nemo-terminal
-      become: true
-      package: name=nemo-terminal state=present
-      register: res_nemo_terminal
-      ignore_errors: true
+        # removed 20260910
+        #- name: Install nemo-terminal
+        #become: true
+        #package: name=nemo-terminal state=present
+        #register: res_nemo_terminal
+        #ignore_errors: true
 
     - name: Install nmap
       become: true

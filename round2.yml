@@ -154,28 +154,29 @@
 #    cinnamon_theme: "Mint-Y-Dark"
 
 # NOTE: Dark mode will be active after reboot.
+# NOTE: This did not work!!!
 
 #  tasks:
-
-    - name: Set GTK theme to dark variant
-      ansible.builtin.command: >
-        gsettings set org.gnome.desktop.interface gtk-theme '{{ gtk_theme }}'
-      changed_when: true
-
-    - name: Set Icon theme to dark variant
-      ansible.builtin.command: >
-        gsettings set org.gnome.desktop.interface icon-theme '{{ icon_theme }}'
-      changed_when: true
-
-    - name: Set Cinnamon desktop theme
-      ansible.builtin.command: >
-        gsettings set org.cinnamon.theme name '{{ cinnamon_theme }}'
-      changed_when: true
-
-    - name: Set Window Manager (Metacity) theme
-      ansible.builtin.command: >
-        gsettings set org.cinnamon.desktop.wm.preferences theme '{{ window_theme }}'
-      changed_when: true
+#
+#    - name: Set GTK theme to dark variant
+#      ansible.builtin.command: >
+#        gsettings set org.gnome.desktop.interface gtk-theme '{{ gtk_theme }}'
+#      changed_when: true
+#
+#    - name: Set Icon theme to dark variant
+#      ansible.builtin.command: >
+#        gsettings set org.gnome.desktop.interface icon-theme '{{ icon_theme }}'
+#      changed_when: true
+#
+#    - name: Set Cinnamon desktop theme
+#      ansible.builtin.command: >
+#        gsettings set org.cinnamon.theme name '{{ cinnamon_theme }}'
+#      changed_when: true
+#
+#    - name: Set Window Manager (Metacity) theme
+#      ansible.builtin.command: >
+#        gsettings set org.cinnamon.desktop.wm.preferences theme '{{ window_theme }}'
+#      changed_when: true
 
 ###
 
