@@ -35,10 +35,11 @@
         run_report: "{{ prompt_report }}"
         run_refind: "{{ prompt_refind }}"
 
-    - name: Check if local-only playbook exists
-      ansible.builtin.stat:
-        path: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
-      register: local_playbook_stat
+    # [Moved to no-git.yml]
+    # - name: Check if local-only playbook exists
+    #   ansible.builtin.stat:
+    #     path: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
+    #   register: local_playbook_stat
 
 # Play 2: Standard Always-Run Imports
 - import_playbook: ansible_packages.yml
@@ -64,21 +65,23 @@
   when: hostvars['localhost']['run_refind'] | lower == 'y'
 
 # Play 8: Run Local Tasks
-- name: Execute Local-only Configuration
-  hosts: localhost
-  connection: local
-  tasks:
-    - name: Include local-only tasks if file exists
-      ansible.builtin.include_tasks: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
-      when: hostvars['localhost']['local_playbook_stat']['stat']['exists'] | default(false)
-
-    - name: Notify if local-only file was missing
-      ansible.builtin.debug:
-        msg: "No_Git local yml file NOT found"
-      when: not hostvars['localhost']['local_playbook_stat']['stat']['exists']
+# [Moved to no-git.yml]
+# - name: Execute Local-only Configuration
+#   hosts: localhost
+#   connection: local
+#   tasks:
+#     - name: Include local-only tasks if file exists
+#       ansible.builtin.include_tasks: "{{ lookup('env', 'HOME') }}/no-git-ansible-local-only/nogit_ansible_local.yml"
+#       when: hostvars['localhost']['local_playbook_stat']['stat']['exists'] | default(false)
+#
+#     - name: Notify if local-only file was missing
+#       ansible.builtin.debug:
+#         msg: "No_Git local yml file NOT found"
+#       when: not hostvars['localhost']['local_playbook_stat']['stat']['exists']
 
 # Play 9: Local-only Configuration (Bookmarks)
-- import_playbook: "../no-git-ansible-local-only/nogit_generate_bookmarks.yml"
+# [Moved to no-git.yml]
+# - import_playbook: "../no-git-ansible-local-only/nogit_generate_bookmarks.yml"
 
 # Play 10: All changes beyond 09-09-2026
 # Standard Always-Run Import
@@ -87,4 +90,6 @@
 # Play 11: Keyboard / Mouse
 # Standard Always-Run Import
 - import_playbook: ansible_bash_keyboard_mouse.yml
+
+
 
