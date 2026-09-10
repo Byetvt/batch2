@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # 20260425 added comment lines v1.1
+# 20260910 updatedate file format to YYYY-MM-DD-001 v1.2
 # /home/user01/.local/share/nemo/scripts
 import os
 import sys
 import re
 import subprocess
 from zipfile import ZipFile, ZIP_DEFLATED
+from datetime import datetime
 
 def notify(title, message):
     try:
@@ -40,35 +42,27 @@ def main():
     dir_path = os.path.dirname(os.path.abspath(first_file))
     os.chdir(dir_path)
 
-    base_zip = f"{base}.zip"
+    date_str = datetime.now().strftime("%Y%m%d")
 
-    # ALWAYS scan existing zip files and pick the next free number
+    # Scan existing zip files for today and pick the next free 3-digit number starting at 001
     max_num = 0
-    pattern = re.compile(rf"^{re.escape(base)}_(\d{{3}})\.zip$")
+    pattern = re.compile(rf"^{re.escape(base)}_{date_str}_(\d{{3}})\.zip$")
     for filename in os.listdir(dir_path):
-        if filename == base_zip:
-            # Treat the plain base.zip as "001" already taken
-            if max_num < 1:
-                max_num = 1
         match = pattern.match(filename)
         if match:
             num = int(match.group(1))
             if num > max_num:
                 max_num = num
 
-    if max_num == 0:
-        # No base.zip and no numbered zips: create base.zip
-        new_zip_name = base_zip
-    else:
-        new_num = max_num + 1
-        if new_num > 999:
-            notify("Smart Zip", "Error: Maximum of 999 zip files reached")
-            print("Error: Maximum of 999 zip files reached.")
-            sys.exit(1)
-        new_zip_name = f"{base}_{new_num:03d}.zip"
+    new_num = max_num + 1
+    if new_num > 999:
+        notify("Smart Zip", "Error: Maximum of 999 zip files reached for today")
+        print("Error: Maximum of 999 zip files reached for today.")
+        sys.exit(1)
+    new_zip_name = f"{base}_{date_str}_{new_num:03d}.zip"
 
     print(f"Creating {new_zip_name} from selected files and folders...")
-    notify("Smart Zip", f"v1.1 Started: {new_zip_name}")
+    notify("Smart Zip", f"v1.2 Started: {new_zip_name}")
 
     try:
         # Explicit DEFLATE with max level
@@ -84,4 +78,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
