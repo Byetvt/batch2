@@ -153,6 +153,8 @@
 #    window_theme: "Mint-Y-Dark"
 #    cinnamon_theme: "Mint-Y-Dark"
 
+# NOTE: Dark mode will be active after reboot.
+
 #  tasks:
 
     - name: Set GTK theme to dark variant
