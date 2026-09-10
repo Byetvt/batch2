@@ -9,7 +9,15 @@ fi
 HASH=$(sha256sum "$1" | awk '{print $1}')
 FILENAME=$(basename "$1")
 
-# Show result in a copy-friendly dialog box
+# Define the text content
+RESULT="File: $FILENAME\n\nSHA256 Hash:\n$HASH"
+
+# Copy the result to the system clipboard
+echo -e "$RESULT" | xclip -selection clipboard
+
+# Show result in a dialog box
 zenity --info --title="SHA256 Checksum" \
-       --text="File: $FILENAME\n\nSHA256 Hash:\n$HASH" \
+       --text="$RESULT" \
        --width=500
+
+
