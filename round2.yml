@@ -11,6 +11,11 @@
   connection: local
   gather_facts: true
 
+  vars:
+    cifs_username: "user_goes_here"
+    cifs_password: "password_goes_here"
+    target_user: "{{ lookup('env', 'USER') | default(ansible_user_id, true) }}"
+
   tasks:
     - name: DEBUG - Environment Info
       debug:
@@ -60,12 +65,74 @@
 
 ###
 
+    - name: Ensure Samba configuration directory exists
+      become: true
+      ansible.builtin.file:
+        path: /etc/samba
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create credentials file if it does not already exist
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/samba/creds
+        content: |
+          username={{ cifs_username }}
+          password={{ cifs_password }}
+        owner: root
+        group: root
+        mode: '0600'
+        force: false
+
+    - name: Create local mount point directory
+      become: true
+      ansible.builtin.file:
+        path: /mnt/routershare
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: '0770'
+
+    - name: Mount CIFS share and add to fstab
+      become: true
+      ansible.posix.mount:
+        path: /mnt/routershare
+        src: //192.168.50.1/data1
+        fstype: cifs
+        opts: credentials=/etc/samba/creds,vers=1.0,sec=ntlmssp,uid=1000,gid=1000,file_mode=0770,dir_mode=0770
+        state: mounted
+      register: res_cifs
+
+    - name: Ensure GTK bookmarks directory exists for the user
+      ansible.builtin.file:
+        path: "/home/{{ target_user }}/.config/gtk-3.0"
+        state: directory
+        owner: "{{ target_user }}"
+        group: "{{ target_user }}"
+        mode: '0755'
+
+    - name: Add routershare to Nemo bookmarks
+      ansible.builtin.lineinfile:
+        path: "/home/{{ target_user }}/.config/gtk-3.0/bookmarks"
+        line: "file:///mnt/routershare routershare"
+        create: true
+        owner: "{{ target_user }}"
+        group: "{{ target_user }}"
+        mode: '0644'
+
+
+
+###
+
 
 
     - name: Package Execution Summary
       vars:
         all_results:
           - { n: 'jp2a', r: "{{ res_jp2a }}" }
+          - { n: 'cifs_mount', r: "{{ res_cifs }}" }
       debug:
         msg: "{{ item.n }}: {{ 'FAILED' if item.r.failed else 'SUCCESS' }}"
       loop: "{{ all_results }}"
@@ -73,5 +140,4 @@
         label: "{{ item.n }}"
 
  
-
 
