@@ -176,7 +176,7 @@
 
 ###
 
-
+# all attempts failed
 ###
 #---
 #- name: Enable Guest Sessions on Linux Mint 22 (Pending Reboot)
@@ -210,16 +210,16 @@
 #        chmod 0644 /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
 #      become: true
      
-    - name: Configure LightDM to allow guest sessions
-      ansible.builtin.copy:
-        dest: /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
-        content: |
-          [Seat:*]
-          allow-guest=true
-        owner: root
-        group: root
-        mode: '0644'
-      become: true
+#    - name: Configure LightDM to allow guest sessions
+#      ansible.builtin.copy:
+#        dest: /etc/lightdm/lightdm.conf.d/99-enable-guest.conf
+#        content: |
+#          [Seat:*]
+#          allow-guest=true
+#        owner: root
+#       group: root
+#        mode: '0644'
+#      become: true
 
 
 
