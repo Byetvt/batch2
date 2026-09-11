@@ -579,7 +579,7 @@
       loop: "{{ all_results }}"
       loop_control:
         label: "{{ item.n }}"
-
+      ignore_errors: true
  
 
 
