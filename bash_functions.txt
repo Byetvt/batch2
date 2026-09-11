@@ -107,4 +107,18 @@ cht() {
     curl -s "https://cht.sh/$1" 
 }
 
+
+
+
+
+# Unlock Ansible for the current session
+# ansible-unlock() to run
+ansible-unlock() {
+    read -sp "Enter Sudo Password: " PASS
+    export ANSIBLE_BECOME_PASS=$PASS
+    unset PASS
+    echo -e "\nAnsible unlocked for this session."
+}
+
+
 #
