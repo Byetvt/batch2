@@ -136,94 +136,66 @@
 
 
 
-###
 
 
-###
 
-#---
-#- name: Enable Dark Mode on Linux Mint Cinnamon
-#  hosts: localhost
-#  connection: local
-#  gather_facts: false
-#
-#  vars:
-#    gtk_theme: "Mint-Y-Dark"
-#    icon_theme: "Mint-Y-Dark"
-#    window_theme: "Mint-Y-Dark"
-#    cinnamon_theme: "Mint-Y-Dark"
 
-# NOTE: Dark mode will be active after reboot.
-# NOTE: This did not work!!!
 
-#  tasks:
-#
-#    - name: Set GTK theme to dark variant
-#      ansible.builtin.command: >
-#        gsettings set org.gnome.desktop.interface gtk-theme '{{ gtk_theme }}'
-#      changed_when: true
-#
-#    - name: Set Icon theme to dark variant
-#      ansible.builtin.command: >
-#        gsettings set org.gnome.desktop.interface icon-theme '{{ icon_theme }}'
-#      changed_when: true
-#
-#    - name: Set Cinnamon desktop theme
-#      ansible.builtin.command: >
-#        gsettings set org.cinnamon.theme name '{{ cinnamon_theme }}'
-#      changed_when: true
-#
-#    - name: Set Window Manager (Metacity) theme
-#      ansible.builtin.command: >
-#        gsettings set org.cinnamon.desktop.wm.preferences theme '{{ window_theme }}'
-#      changed_when: true
 
-###
 
-# all attempts failed
-###
-#---
-#- name: Enable Guest Sessions on Linux Mint 22 (Pending Reboot)
-#  hosts: all
-#  become: true
-#  tasks:
 
-#    - name: Ensure the LightDM configuration directory exists
-#      ansible.builtin.file:
-#        path: /etc/lightdm/lightdm.conf.d
-#        state: directory
-#        owner: root
-#        group: root
+
+
+
+
+###  get my new gsettings.sh script
+
+
+    - name: Download gsettings.sh to ansible-config
+      become: true
+      get_url:
+        url: "https://raw.githubusercontent.com/Byetvt/batch2/main/gsettings.sh"
+        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/gsettings.sh"
+        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+        mode: '0755'
+
+#    - name: Copy gsettings.sh to scripts if Linux Mint
+#      become: true
+#      copy:
+#        src: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/ansible-config/gsettings.sh"
+#        dest: "/home/{{ ansible_env.SUDO_USER | default(ansible_user_id) }}/.local/share/nemo/scripts/gsettings.sh"
+#        remote_src: true
+#        owner: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
+#        group: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 #        mode: '0755'
+#      when: ansible_distribution == 'Linux Mint'         
 
-#    - name: Configure LightDM to allow guest sessions
-#      ansible.builtin.copy:
-#        dest: /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
-#        content: |
-#          [Seat:*]
-#          allow-guest=true
-#       owner: root
-#        group: root
-#        mode: '0644'
 
-#    - name: Configure LightDM to allow guest sessions
-#      ansible.builtin.shell: |
-#        mkdir -p /etc/lightdm/lightdm.conf.d
-#        echo -e "[Seat:*]\nallow-guest=true" > /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
-#        chown root:root /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
-#        chmod 0644 /etc/lightdm/lightdm.conf.d/50-enable-guest.conf
-#      become: true
-     
-#    - name: Configure LightDM to allow guest sessions
-#      ansible.builtin.copy:
-#        dest: /etc/lightdm/lightdm.conf.d/99-enable-guest.conf
-#        content: |
-#          [Seat:*]
-#          allow-guest=true
-#        owner: root
-#       group: root
-#        mode: '0644'
-#      become: true
+
+
+
+###  run my new gsettings.sh script
+
+
+    - name: Get the active graphical desktop user
+      shell: loginctl list-users --no-legend | awk '{print $2}' | head -n 1
+      register: desktop_user
+      changed_when: false
+
+    - name: Get desktop user UID
+      shell: id -u {{ desktop_user.stdout }}
+      register: desktop_uid
+      changed_when: false
+
+    - name: Run gsettings script as the desktop user
+      script: gsettings.sh
+      become: yes
+      become_user: "{{ desktop_user.stdout }}"
+      environment:
+        DISPLAY: ":0"
+        DBUS_SESSION_BUS_ADDRESS: "unix:path=/run/user/{{ desktop_uid.stdout }}/bus"
+        XDG_RUNTIME_DIR: "/run/user/{{ desktop_uid.stdout }}"
 
 
 
