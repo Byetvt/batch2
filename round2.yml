@@ -245,6 +245,23 @@
 ###
 
 
+    - name: Deploy Geany Configurations
+      hosts: localhost
+      connection: local
+      tasks:
+        - name: Ensure target configuration directory exists
+          ansible.builtin.file:
+            path: "~/.config/geany"
+            state: directory
+            mode: '0755'
+
+    - name: Copy configuration files to ~/.config/geany
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../configs/geany/"
+        dest: "~/.config/geany/"
+        mode: '0644'
+
+
 ###
 
 
