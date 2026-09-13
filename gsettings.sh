@@ -10,5 +10,6 @@ gsettings set org.cinnamon.desktop.a11y.keyboard togglekeys-enable-osd true
 #gsettings set org.cinnamon.desktop.a11y.keyboard togglekeys-enable-beep false
 gsettings set org.cinnamon.desktop.a11y.keyboard togglekeys-enable-beep true
  
-
+# set Geany as default nemo editor
+xdg-mime default geany.desktop text/plain
 
