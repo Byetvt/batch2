@@ -88,5 +88,54 @@ alias show_nics="ip link show"
 ##################################################################
 aaTEMP="/var/tmp"
 export aaTEMP
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=4009
+HISTFILESIZE=12009
+
+
+
 ##################################################################
+
+#That makes it so that up/down arrow keys search backwards/forwards through the history for lines starting with what you've typed thus far (and ignoring case). So I can type "sudo" #and press up arrow key to go through the history of commands I ran starting with "sudo". And if I've not typed anything then the up/down arrow keys go through history line by line #as normal.
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind 'set search-ignore-case on'
+
+##################################################################
+##Configuring Bash history to append rather than overwrite ensures that commands executed across multiple terminal sessions are preserved without data loss. By default, #closing a ##terminal session can overwrite command history from other concurrent sessions. 
+
+##shopt -s histappend
+#Write Commands Immediately 
+##force Bash to save every command to the history file immediately after execution
+##PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+##################################################################
+
+
+##################################################################
+##################################################################
+
+
+##################################################################
+##################################################################
+
+
+##################################################################
+##################################################################
+
+
+##################################################################
+##################################################################
+
+
+##################################################################
+
+
+
+
 # . .bashrc   <== to reload .bashrc++
+
+
+

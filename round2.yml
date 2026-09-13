@@ -200,6 +200,54 @@
 
 
 ###
+    - name: Ensure Geany colorschemes directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/.config/geany/colorschemes"
+        state: directory
+        mode: '0755'
+
+    - name: Clone geany-themes repository to a temporary location
+      ansible.builtin.git:
+        repo: 'https://github.com/geany/geany-themes.git'
+        dest: /tmp/geany-themes
+        update: yes
+
+    - name: Install Geany color schemes
+      ansible.builtin.shell: |
+        cp /tmp/geany-themes/colorschemes/*.conf {{ ansible_env.HOME }}/.config/geany/colorschemes/
+      args:
+        executable: /bin/bash
+###
+
+###
+##################################################################
+##Configuring Bash history to append rather than overwrite ensures that commands executed across multiple terminal sessions are preserved without data loss. By default, #closing a ##terminal session can overwrite command history from other concurrent sessions. 
+
+##shopt -s histappend
+#Write Commands Immediately 
+##force Bash to save every command to the history file immediately after execution
+##PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+##################################################################
+
+    - name: Ensure histappend is enabled in bashrc
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: "shopt -s histappend"
+        state: present
+
+    - name: Ensure PROMPT_COMMAND saves history immediately
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.bashrc"
+        line: 'PROMPT_COMMAND="history -a; $PROMPT_COMMAND"'
+        state: present
+
+###
+
+
+###
+
+
 
 
 
