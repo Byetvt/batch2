@@ -241,26 +241,32 @@
         path: "{{ ansible_env.HOME }}/.bashrc"
         line: 'PROMPT_COMMAND="history -a; $PROMPT_COMMAND"'
         state: present
-
+###
+###
+    - name: Install geany-plugins
+      become: true
+      package: name=geany-plugins state=present
+      register: res_geany_plugins
+      ignore_errors: true
+###
+###
+###
+###
+###
+###
 ###
 
-
-    - name: Deploy Geany Configurations
-      hosts: localhost
-      connection: local
-      tasks:
-        - name: Ensure target configuration directory exists
-          ansible.builtin.file:
-            path: "~/.config/geany"
-            state: directory
-            mode: '0755'
+    - name: Ensure target configuration directory exists
+      ansible.builtin.file:
+        path: "~/.config/geany"
+        state: directory
+        mode: '0755'
 
     - name: Copy configuration files to ~/.config/geany
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/../../configs/geany/"
+        src: "{{ lookup('env', 'HOME') }}/ansible-config/configs/geany/"
         dest: "~/.config/geany/"
         mode: '0644'
-
 
 ###
 
