@@ -105,7 +105,8 @@ HISTFILESIZE=12009
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
-bind 'set search-ignore-case on'
+# Since Linux Mint 22 is based on Ubuntu 24.04, your system uses GNU Readline 8.2 and Bash 5.2.
+##bind 'set search-ignore-case on'
 
 ##################################################################
 ##Configuring Bash history to append rather than overwrite ensures that commands executed across multiple terminal sessions are preserved without data loss. By default, #closing a ##terminal session can overwrite command history from other concurrent sessions. 

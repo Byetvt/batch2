@@ -1,5 +1,6 @@
 ansible_debug.log
 *.log
+*.zip
 *history*
 *history*.*
 *history*.txt
