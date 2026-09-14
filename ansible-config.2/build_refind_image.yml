@@ -1,0 +1,83 @@
+---
+- name: Build rEFInd Staging Folder with Custom Config
+  hosts: localhost
+  become: true
+
+#build_refind_image.yml
+# ansible-playbook build_refind_image.yml --ask-become-pass
+
+  vars:
+    staging_dir: "/tmp/refind_usb_staging"
+
+  tasks:
+    - name: Install rEFInd package
+      package:
+        name: refind
+        state: present
+
+    - name: Find rEFInd binary location
+      find:
+        paths: ["/usr/share", "/usr/lib"]
+        patterns: "refind_x64.efi"
+        recurse: yes
+      register: refind_loc
+
+    - name: Set rEFInd source path variable
+      set_fact:
+        refind_src: "{{ refind_loc.files[0].path | dirname }}"
+      when: refind_loc.matched > 0
+
+    - name: Ensure staging directory structure exists
+      file:
+        path: "{{ staging_dir }}/EFI/BOOT"
+        state: "{{ item }}"
+      loop: [absent, directory]
+
+    - name: Copy EFI binaries and assets
+      shell: |
+        cp {{ refind_src }}/refind_x64.efi {{ staging_dir }}/EFI/BOOT/bootx64.efi
+        cp -r {{ refind_src }}/drivers_x64 {{ staging_dir }}/EFI/BOOT/
+        cp -r {{ refind_src }}/icons {{ staging_dir }}/EFI/BOOT/
+      args:
+        executable: /bin/bash
+
+    - name: Create custom refind.conf from provided settings
+      copy:
+        dest: "{{ staging_dir }}/EFI/BOOT/refind.conf"
+        content: |
+          # rEFInd Configuration (Custom)
+          timeout 900
+          use_nvram false
+          
+          showtools shell, bootorder, gdisk, memtest, mok_tool, apple_recovery, windows_recovery, about, hidden_tags, reboot, exit, firmware, fwupdate
+          
+          scanfor internal,external,optical,manual,firmware
+          
+          dont_scan_dirs EFI/BOOT,EFI/Microsoft/Boot,EFI/Dell,EFI/HP,EFI/memtest86
+          dont_scan_files +,shimx64.efi,MokManager.efi,grubx64.efi,fallback.efi
+          
+          default_selection Ubuntu
+
+          # Example Manual Stanza (Disabled by default)
+          menuentry Linux {
+              icon EFI/refind/icons/os_linux.png
+              volume 904404F8-B481-440C-A1E3-11A5A954E601
+              loader bzImage-3.3.0-rc7
+              initrd initrd-3.3.0.img
+              options "ro root=UUID=5f96cafa-e0a7-4057-b18f-fa709db5b837"
+              disabled
+          }
+
+    - name: Set permissions for user access in Nemo
+      file:
+        path: "{{ staging_dir }}"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        recurse: yes
+
+    - name: Success Summary
+      debug:
+        msg: 
+          - "Staging folder ready at: {{ staging_dir }}"
+          - "Settings applied: Timeout 900, NVRAM False, Default 'Ubuntu'."
+          - "Copy the 'EFI' folder to the root of your FAT32 USB drive."

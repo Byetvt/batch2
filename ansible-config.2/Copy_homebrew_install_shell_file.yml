@@ -1,0 +1,19 @@
+---
+## run it with -  ansible-playbook Copy_homebrew_install_shell_file.yml 
+- name: Copy script to home directory and make executable
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  tasks:
+    - name: Ensure the scripts directory exists under home
+      file:
+        path: "{{ ansible_env.HOME }}/scripts"
+        state: directory
+        mode: '0755'
+
+    - name: Copy brew_msedit_install.sh to the scripts directory
+      copy:
+        src: brew_msedit_install.sh
+        dest: "{{ ansible_env.HOME }}/scripts/brew_msedit_install.sh"
+        mode: '0755'

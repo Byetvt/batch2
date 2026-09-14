@@ -1,0 +1,30 @@
+## use ===  ansible-playbook ansible_bash_keyboard_mouse.yml --ask-become-pass
+## to run the bash script by itself
+
+- name: Workstation Setup - ansible_bash_keyboard_mouse.yml
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  # This creates the interactive prompt
+  vars_prompt:
+    - name: set_left_handed
+      prompt: "Do you want to set the mouse to left-handed mode? (y/N)"
+      default: "N"
+      private: no
+
+  tasks:
+    - name: DEBUG - Show Environment
+      debug:
+        msg: "Sudo User: {{ ansible_env.SUDO_USER | default('NONE') }}"
+
+    - name: Set mouse to left-handed mode
+      community.general.dconf:
+        key: "/org/cinnamon/desktop/peripherals/mouse/left-handed"
+        value: "true"
+        state: present
+      # Only runs if user typed Y or y
+      when: set_left_handed | lower == 'y'
+
+
+

@@ -1,0 +1,59 @@
+# ansible-playbook ansible_dosbox.yml --ask-become-pass
+# ansible-playbook ansible_dosbox.yml --ask-become-pass
+---
+- name: Setup DOSBox with custom C drive
+  hosts: localhost
+  connection: local
+  vars:
+    dosbox_dir: "{{ lookup('env', 'HOME') }}/dosbox"
+    dosbox_config_dir: "{{ lookup('env', 'HOME') }}/.dosbox"
+    dosbox_conf_file: "{{ lookup('env', 'HOME') }}/.dosbox/dosbox-0.74-3.conf"
+
+  tasks:
+    - name: Install DOSBox
+      become: true
+      package:
+        name: dosbox
+        state: present
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ dosbox_dir }}"
+        - "{{ dosbox_config_dir }}"
+
+    - name: Generate config file
+      shell: "dosbox -printconf > {{ dosbox_conf_file }}"
+      args:
+        creates: "{{ dosbox_conf_file }}"
+
+    - name: Force mount commands into autoexec
+      blockinfile:
+        path: "{{ dosbox_conf_file }}"
+        marker: "# {mark} ANSIBLE MOUNT BLOCK"
+        insertafter: EOF
+        block: |
+          [autoexec]
+          mount c {{ dosbox_dir }}
+          c:
+
+    - name: Create Menu Entry (Keep this for the Games menu)
+      copy:
+        dest: "{{ lookup('env', 'HOME') }}/.local/share/applications/dosbox.desktop"
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=DOSBox
+          Comment=DOS Emulator
+          Exec=dosbox -conf {{ dosbox_conf_file }}
+          Icon=dosbox
+          Terminal=false
+          Categories=Game;Emulator;
+        mode: '0755'
+
+    - name: Report Status
+      debug:
+        msg: "DOSBox configured. Drive C points to {{ dosbox_dir }}"

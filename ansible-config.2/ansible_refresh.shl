@@ -1,0 +1,5 @@
+wget -O master.zip https://github.com/Byetvt/batch2/archive/refs/heads/master.zip && ls -l master.zip
+unzip -o master.zip -d $HOME/ansible-config
+mv $HOME/ansible-config/batch2-main/* $HOME/ansible-config/
+rm $HOME/ansible-config/batch2-main/.gitignore
+rmdir $HOME/ansible-config/batch2-main
