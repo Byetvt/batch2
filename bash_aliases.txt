@@ -46,6 +46,7 @@ alias mywgetfunctions="wget --output-document bash_functions https://raw.githubu
 alias mywgetnotes="wget --output-document bash_notes https://raw.githubusercontent.com/Byetvt/batch1/main/bash_notes"
 alias mywgetall="mywgetbatch; mywgetaliases; mywgetfunctions; mywgetnotes; mywgetflatpak_export; mywgetflatpaks"
 alias mywgetansiblesetup='wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup-ansible.sh" -O $HOME/setup-ansible.sh'
+alias mywgetansiblerefresh='wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_refresh.sh" -O $HOME/ansible_refresh.sh'
 alias netdis="sudo netdiscover -r 192.168.1.1/24"
 alias now="fnc_now"
 alias nowdate='date +"%m-%d-%Y"'
