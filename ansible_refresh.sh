@@ -4,4 +4,4 @@ unzip -o master.zip -d $HOME/ansible-config
 mv $HOME/ansible-config/batch2-main/* $HOME/ansible-config/
 #rm $HOME/ansible-config/batch2-main/.gitignore
 #rmdir $HOME/ansible-config/batch2-main
-rm -rf $HOME/ansible-config/batch2-master
+rm -rf $HOME/ansible-config/batch2-main
