@@ -66,6 +66,7 @@ wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/Copy_homebrew_inst
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/system_report.yml" -O "$TARGET_DIR/system_report.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_bash_keyboard_mouse.yml" -O "$TARGET_DIR/ansible_bash_keyboard_mouse.yml"
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/round2.yml" -O "$TARGET_DIR/round2.yml"
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible_mindustry.yml" -O "$TARGET_DIR/ansible_mindustry.yml"
 #
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/setup-ansible.sh" -O $HOME/setup-ansible.shell
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/brew_msedit_install.sh" -O $TARGET_DIR/brew_msedit_install.sh
