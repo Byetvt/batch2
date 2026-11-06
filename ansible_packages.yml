@@ -199,6 +199,12 @@
       register: res_glances
       ignore_errors: true
 
+    - name: Install GNOME Games
+      become: true
+      package: name=gnome-games state=present
+      register: res_gnome_games
+      ignore_errors: true
+
     - name: Install gparted
       become: true
       package: name=gparted state=present
@@ -502,6 +508,45 @@
       package: name=geeqie state=present
       register: res_geeqie
       ignore_errors: true
+
+
+
+##  Apple IOS file system start
+##  sudo apt install -y ifuse libimobiledevice6 libimobiledevice-utils gvfs-backends gvfs-fuse 
+##
+    - name: Install ifuse
+      become: true
+      package: name=ifuse state=present
+      register: res_ifuse
+      ignore_errors: true
+    
+    - name: Install libimobiledevice6
+      become: true
+      package: name=libimobiledevice6 state=present
+      register: res_libimobiledevice6
+      ignore_errors: true
+    
+    - name: Install libimobiledevice-utils
+      become: true
+      package: name=libimobiledevice-utils state=present
+      register: res_libimobiledevice_utils
+      ignore_errors: true
+    
+    - name: Install gvfs-backends
+      become: true
+      package: name=gvfs-backends state=present
+      register: res_gvfs_backends
+      ignore_errors: true
+    
+    - name: Install gvfs-fuse
+      become: true
+      package: name=gvfs-fuse state=present
+      register: res_gvfs_fuse
+      ignore_errors: true
+
+##      
+##  Apple IOS file system end      
+      
 
 ###
 ###

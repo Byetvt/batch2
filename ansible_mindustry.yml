@@ -1,0 +1,110 @@
+---
+- name: Install Mindustry Natively, Restore Data, and Create Shortcuts
+  hosts: localhost
+  connection: local
+
+#
+# ansible-playbook ansible_mindustry.yml --ask-become-pass
+#
+
+  vars:
+    # Installation paths
+    mindustry_install_dir: "/opt/mindustry"
+    mindustry_data_dir: "{{ ansible_env.HOME }}/.local/share/Mindustry"
+    
+    # Path to your local exported game data zip file
+    mindustry_zip_path: "{{ playbook_dir }}/files/mindustry-data.zip"
+
+  tasks:
+    - name: Update apt cache and install Java (JRE) and unzip natively
+      become: true
+      apt:
+        name:
+          - default-jre
+          - unzip
+        state: present
+        update_cache: yes
+
+    - name: Create system-wide installation directory for Mindustry
+      become: true
+      file:
+        path: "{{ mindustry_install_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Download latest Mindustry release JAR from GitHub
+      become: true
+      get_url:
+        url: "https://github.com/Anuken/Mindustry/releases/latest/download/Mindustry.jar"
+        dest: "{{ mindustry_install_dir }}/Mindustry.jar"
+        mode: '0644'
+
+    - name: Ensure user Mindustry data directory exists
+      file:
+        path: "{{ mindustry_data_dir }}"
+        state: directory
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: '0755'
+
+    - name: Copy exported game data zip to remote target
+      copy:
+        src: "{{ mindustry_zip_path }}"
+        dest: "/tmp/mindustry_data.zip"
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+
+    - name: Extract exported game data zip into Mindustry data path
+      unarchive:
+        src: "/tmp/mindustry_data.zip"
+        dest: "{{ mindustry_data_dir }}/"
+        remote_src: yes
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+
+    - name: Clean up temporary zip file
+      file:
+        path: "/tmp/mindustry_data.zip"
+        state: absent
+
+    - name: Create desktop entry for GUI menu system
+      become: true
+      copy:
+        dest: "/usr/share/applications/mindustry.desktop"
+        content: |
+          [Desktop Entry]
+          Name=Mindustry
+          Comment=A sandbox tower defense and factory building game
+          Exec=java -jar /opt/mindustry/Mindustry.jar
+          Icon=applications-games
+          Terminal=false
+          Type=Application
+          Categories=Game;StrategyGame;
+          StartupNotify=true
+        mode: '0644'
+
+    - name: Ensure user Desktop directory exists
+      file:
+        path: "{{ ansible_env.HOME }}/Desktop"
+        state: directory
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: '0755'
+
+    - name: Copy application shortcut to user Desktop
+      copy:
+        src: "/usr/share/applications/mindustry.desktop"
+        dest: "{{ ansible_env.HOME }}/Desktop/mindustry.desktop"
+        remote_src: yes
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: '0755'
+
+    - name: Make desktop shortcut executable for Mint desktop environment
+      file:
+        path: "{{ ansible_env.HOME }}/Desktop/mindustry.desktop"
+        mode: '0755'
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"

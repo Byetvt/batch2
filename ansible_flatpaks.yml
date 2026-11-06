@@ -21,6 +21,10 @@
       become: false
       flatpak: name=org.linux_hardware.hw-probe state=present method=user remote=flathub
 
+    - name: Flatpak Bazaar
+      become: false
+      flatpak: name=io.github.kolunmi.Bazaar state=present method=user remote=flathub
+
     - name: Flatpak MissionCenter
       become: false
       flatpak: name=io.missioncenter.MissionCenter state=present method=user remote=flathub

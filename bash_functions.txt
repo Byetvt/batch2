@@ -121,4 +121,6 @@ ansible-unlock() {
 }
 
 
+sizesort() { ls -A1 "${1:-.}" | while read tmpx; do   printf "%s\t--\t%s\n" "$(du -bs "$tmpx" 2> /dev/null | cut -f1)" "$tmpx"; done | sort -gr | numfmt --to si; unset tmpx; } 
+
 #
