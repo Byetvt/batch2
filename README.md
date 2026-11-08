@@ -1,3 +1,5 @@
+20261108 - change install to git pull, old scripts are obsolete
+
 
 $HOME/setup-ansible.sh 
 

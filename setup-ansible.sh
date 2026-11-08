@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo "DNU - this script is obsolete"
+echo "run ansible-SETUP.sh" 
+read -n 1 -s -r -p "Press any key to exit..."
+exit
+
+
 #source $HOME/setup-ansible.sh
 
 # Define the target path

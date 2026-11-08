@@ -1,3 +1,9 @@
+echo "DNU - this script is obsolete"
+echo "run ansible-SETUP.sh" 
+read -n 1 -s -r -p "Press any key to exit..."
+exit
+
+
 wget -O master.zip https://github.com/Byetvt/batch2/archive/refs/heads/master.zip && ls -l master.zip
 unzip -o master.zip -d $HOME/ansible-config
 #The * wildcard in bash does not match hidden files (files starting with a dot, like .git or .gitignore) by default.
