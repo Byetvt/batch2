@@ -1,5 +1,7 @@
 20261108 - change install to git pull, old scripts are obsolete
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh" -O "ansible-SETUP.sh"
+or this to bypass cache
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh?cache_bypass=$(date +%s)" -O "ansible-SETUP.sh"
 $HOME/ansible-SETUP.sh 
 
 
