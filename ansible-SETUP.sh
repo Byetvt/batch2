@@ -12,9 +12,6 @@ DEST="$HOME/ansible-config"
 PLAYBOOK="main.yml"
 
 # 1. Check if Ansible and Git are installed using baseline repositories
-##sudo apt install -y software-properties-common
-##sudo add-apt-repository --yes --update ppa:ansible/ansible
-
 for pkg in ansible git; do
     if ! command -v "$pkg" &> /dev/null; then
         echo "$pkg is not installed. Installing baseline package..."
@@ -26,20 +23,27 @@ for pkg in ansible git; do
     fi
 done
 
-# 2. Update existing checkout or delete and pull fresh repo, then run playbook
-read -r -p "Pull latest changes only, or delete folder and pull full repo? [update/delete] (default: update) " answer
+# 2. Update existing checkout or delete and clone fresh repo via Git
+read -r -p "Pull latest changes only, or delete folder and clone fresh repo? [update/delete] (default: update) " answer
 case "${answer:-update}" in
     [dD]|[dD][eE][lL][eE][tT][eE]|[fF][uU][lL][lL])
-        echo "Deleting $DEST and pulling full repo..."
+        echo "Deleting $DEST and cloning fresh repo..."
         rm -rf "$DEST"
-        ansible-pull -U "$REPO_URL" -d "$DEST" -f "$PLAYBOOK" -i "localhost," -c local -K
+        git clone "$REPO_URL" "$DEST"
         ;;
     *)
-        echo "Pulling latest changes into existing checkout..."
-        ansible-pull -U "$REPO_URL" -d "$DEST" -f "$PLAYBOOK" -i "localhost," -c local -K
+        if [ -d "$DEST/.git" ]; then
+            echo "Pulling latest changes into existing checkout..."
+            git -C "$DEST" pull
+        else
+            echo "Directory exists but is not a git repo. Cloning fresh..."
+            rm -rf "$DEST"
+            git clone "$REPO_URL" "$DEST"
+        fi
         ;;
 esac
 
-
-
-
+# 3. Change directory to ansible-config and run playbook interactively
+echo "Switching to $DEST and running playbook..."
+cd "$DEST"
+ansible-playbook "$PLAYBOOK" -i "localhost," -c local -K
