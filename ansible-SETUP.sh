@@ -13,8 +13,8 @@ if ! command -v ansible &> /dev/null; then
 
     # Install Ansible
     sudo apt update
-    sudo apt install -y software-properties-common
-    sudo add-apt-repository --yes --update ppa:ansible/ansible
+    ##sudo apt install -y software-properties-common
+    ##sudo add-apt-repository --yes --update ppa:ansible/ansible
     sudo apt install -y ansible
 
     echo "Ansible installation complete."
