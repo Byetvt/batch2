@@ -1,4 +1,6 @@
 # not executable on the main ansible box
+## wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh" -O "ansible-SETUP.sh"
+## $HOME/ansible-SETUP.sh 
 
 #!/usr/bin/env bash
 set -euo pipefail

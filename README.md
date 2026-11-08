@@ -1,5 +1,16 @@
 20261108 - change install to git pull, old scripts are obsolete
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh" -O "ansible-SETUP.sh"
+$HOME/ansible-SETUP.sh 
 
+
+
+
+
+
+
+
+
+----
 
 $HOME/setup-ansible.sh 
 
