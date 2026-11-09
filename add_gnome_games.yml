@@ -4,6 +4,7 @@
     state: present
     update_cache: yes
 
+# version 2.0
 - name: Ensure user local applications directory exists
   file:
     path: "{{ ansible_env.HOME }}/.local/share/applications"
