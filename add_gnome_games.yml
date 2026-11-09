@@ -1,0 +1,62 @@
+---
+- name: Ensure gnome-games meta-package is installed
+  apt:
+    name: gnome-games
+    state: present
+    update_cache: yes
+
+- name: Ensure user local applications directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.local/share/applications"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0755'
+
+- name: Ensure user Desktop directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/Desktop"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0755'
+
+- name: Create .desktop entry files for the Application Menu
+  copy:
+    dest: "{{ ansible_env.HOME }}/.local/share/applications/org.gnome.{{ game_item.exec }}.desktop"
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name={{ game_item.name }}
+      Exec={{ game_item.exec }}
+      Icon={{ game_item.icon }}
+      Terminal=false
+      Categories=Game;
+      StartupNotify=true
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0644'
+  loop: "{{ gnome_games }}"
+  loop_control:
+    loop_var: game_item
+
+- name: Copy .desktop entries to the Desktop for direct icon access
+  copy:
+    src: "{{ ansible_env.HOME }}/.local/share/applications/org.gnome.{{ game_item.exec }}.desktop"
+    dest: "{{ ansible_env.HOME }}/Desktop/org.gnome.{{ game_item.exec }}.desktop"
+    remote_src: yes
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    mode: '0755'
+  loop: "{{ gnome_games }}"
+  loop_control:
+    loop_var: game_item
+
+- name: Mark Desktop shortcuts as trusted (Linux Mint/Cinnamon requirement)
+  file:
+    path: "{{ ansible_env.HOME }}/Desktop/org.gnome.{{ game_item.exec }}.desktop"
+    mode: '0755'
+  loop: "{{ gnome_games }}"
+  loop_control:
+    loop_var: game_item
+

@@ -47,7 +47,7 @@
 - import_playbook: ansible_bash.yml
 - import_playbook: Copy_homebrew_install_shell_file.yml 
 - import_playbook: ansible_mindustry.yml
-
+- import_playbook: add_gnome_games.yml
 
 # Plays 3-7: Optional Playbook Imports (Full Playbooks)
 - import_playbook: ansible_dosbox.yml
