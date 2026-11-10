@@ -1,5 +1,6 @@
 # ansible-playbook round2.yml 
 # This playbook will try to contain all .yml changes made on ar after 09-09-26
+# Oct 2026 - I had to run this playbook again after I setup the samba creds on a brand new install
 #
 #
 # ansible-playbook round2.yml --ask-become-pass 
