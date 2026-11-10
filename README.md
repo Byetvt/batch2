@@ -1,3 +1,42 @@
+# Setup Instructions
+
+> **Note (2026-11-08):** Installation process updated to `git pull`. Older setup scripts are obsolete.
+
+---
+
+## Download Setup Script
+
+To download the setup script directly:
+
+```bash
+wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh" -O "ansible-SETUP.sh" && chmod 755 "ansible-SETUP.sh"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.
+
+
+.
+.
+.
+```old
+
+
 20261108 - change install to git pull, old scripts are obsolete
 
 wget -q "https://raw.githubusercontent.com/Byetvt/batch2/main/ansible-SETUP.sh" -O "ansible-SETUP.sh"
@@ -12,19 +51,8 @@ wget --no-cache --header="Cache-Control: no-cache" -q "https://raw.githubusercon
 
 $HOME/ansible-SETUP.sh 
 
-.
-
-
-.
-.
-.
-
-
-
 
 ----
-
-$HOME/setup-ansible.sh 
 
 cd $HOME/ansible-config
 
