@@ -569,12 +569,14 @@
       register: res_libdvd_pkg
       ignore_errors: true
     
-    - name: Reconfigure libdvd-pkg
-      become: true
-      command: dpkg-reconfigure libdvd-pkg
-      register: res_dpkg_reconfigure_libdvd_pkg
-      ignore_errors: true
-    
+##      sudo dpkg-reconfigure libdvd-pkg
+##
+##    - name: Reconfigure libdvd-pkg
+##      become: true
+##      command: dpkg-reconfigure libdvd-pkg
+##      register: res_dpkg_reconfigure_libdvd_pkg
+##      ignore_errors: true
+##    
     - name: Install handbrake
       become: true
       package: name=handbrake state=present
