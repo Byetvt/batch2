@@ -1,0 +1,76 @@
+---
+# Playbook Name: Install and Verify VeraCrypt
+# Description: Automates secure download, direct GPG key import, signature verification, and APT installation of VeraCrypt
+# Target: Linux Mint 22 (Ubuntu 24.04 compatible)
+#
+# sudo ansible-playbook -i localhost, install_veracrypt.yml
+# sudo rm -rf /tmp/veracrypt_install && sudo ansible-playbook -i localhost, install_veracrypt.yml
+
+- name: Download, Verify, and Install VeraCrypt
+  hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    veracrypt_version: "1.26.31"
+    ubuntu_version: "24.04"
+    download_dir: "/tmp/veracrypt_install"
+    deb_filename: "veracrypt-{{ veracrypt_version }}-Ubuntu-{{ ubuntu_version }}-amd64.deb"
+    sig_filename: "{{ deb_filename }}.sig"
+    sourceforge_base_url: "https://sourceforge.net/projects/veracrypt/files/VeraCrypt%20{{ veracrypt_version }}/Linux"
+    gpg_key_url: "https://www.idrix.fr/VeraCrypt/VeraCrypt_PGP_public_key.asc"
+
+  tasks:
+    - name: Ensure temporary download directory exists
+      ansible.builtin.file:
+        path: "{{ download_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download VeraCrypt .deb package from SourceForge
+      ansible.builtin.get_url:
+        url: "{{ sourceforge_base_url }}/{{ deb_filename }}"
+        dest: "{{ download_dir }}/{{ deb_filename }}"
+        mode: '0644'
+
+    - name: Download VeraCrypt signature file (.sig) from SourceForge
+      ansible.builtin.get_url:
+        url: "{{ sourceforge_base_url }}/{{ sig_filename }}"
+        dest: "{{ download_dir }}/{{ sig_filename }}"
+        mode: '0644'
+
+    - name: Download official VeraCrypt GPG public key file directly
+      ansible.builtin.get_url:
+        url: "{{ gpg_key_url }}"
+        dest: "{{ download_dir }}/VeraCrypt_PGP_public_key.asc"
+        mode: '0644'
+
+    - name: Import VeraCrypt official GPG signing key locally
+      ansible.builtin.command:
+        cmd: "gpg --import {{ download_dir }}/VeraCrypt_PGP_public_key.asc"
+      changed_when: true
+
+    - name: Verify the cryptographic signature of the downloaded package
+      ansible.builtin.command:
+        cmd: "gpg --verify {{ download_dir }}/{{ sig_filename }} {{ download_dir }}/{{ deb_filename }}"
+      register: gpg_verify_result
+      changed_when: false
+
+    - name: Display GPG verification output
+      ansible.builtin.debug:
+        msg: "{{ gpg_verify_result.stderr }}"
+
+    - name: Fail playbook if signature verification failed
+      ansible.builtin.fail:
+        msg: "GPG signature verification failed! Aborting installation for security."
+      when: "'Good signature' not in gpg_verify_result.stderr"
+
+    - name: Install VeraCrypt local .deb package via APT
+      ansible.builtin.apt:
+        deb: "{{ download_dir }}/{{ deb_filename }}"
+        state: present
+        update_cache: yes
+
+    - name: Clean up temporary download directory
+      ansible.builtin.file:
+        path: "{{ download_dir }}"
+        state: absent

@@ -544,6 +544,45 @@
       register: res_gvfs_fuse
       ignore_errors: true
 
+
+    - name: Install ecryptfs-utils
+          become: true
+          package: name=ecryptfs-utils state=present
+          register: res_ecryptfs_utils
+          ignore_errors: true
+    
+    - name: Install cryptsetup
+          become: true
+          package: name=cryptsetup state=present
+          register: res_cryptsetup
+          ignore_errors: true
+    
+    - name: Install vlc
+          become: true
+          package: name=vlc state=present
+          register: res_vlc
+          ignore_errors: true
+    
+    - name: Install libdvd-pkg
+          become: true
+          package: name=libdvd-pkg state=present
+          register: res_libdvd_pkg
+          ignore_errors: true
+    
+    - name: Reconfigure libdvd-pkg
+          become: true
+          command: dpkg-reconfigure libdvd-pkg
+          register: res_dpkg_reconfigure_libdvd_pkg
+          ignore_errors: true
+    
+    - name: Install handbrake
+          become: true
+          package: name=handbrake state=present
+          register: res_handbrake
+          ignore_errors: true
+    
+
+
 ##      
 ##  Apple IOS file system end      
       
